@@ -7,10 +7,10 @@ class ClickUpService {
   String _apiKey;
   static const String _clickUpUrl = "https://api.clickup.com/api/v2";
 
-  createTask(Task task, String listID) async {
+  Future<Task> createTask(Task task, String listID) async {
     try {
       Response response = await Dio().post("$_clickUpUrl/list/$listID/task",
-          data: Task.toJson(),
+          data: task.toJson(),
           options: Options(
             headers: {
               'Authorization': _apiKey,
@@ -18,9 +18,9 @@ class ClickUpService {
             },
           ));
 
-      return response.data['result'];
+      return Task.fromJson(response.data);
     } catch (e) {
-      print(e);
+      throw e;
     }
   }
 }
