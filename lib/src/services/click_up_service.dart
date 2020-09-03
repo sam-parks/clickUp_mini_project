@@ -1,3 +1,4 @@
+import 'package:click_up_tasks/src/data/task.dart';
 import 'package:dio/dio.dart';
 
 class ClickUpService {
