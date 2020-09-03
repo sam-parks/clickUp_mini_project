@@ -7,6 +7,7 @@ import '../config.dart';
 import 'locator.dart';
 import 'ui/pages/home_page.dart';
 import 'ui/router.dart';
+import 'ui/style.dart';
 
 class App extends StatefulWidget {
   const App(
@@ -47,9 +48,7 @@ class _AppState extends State<App> {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Click Up Tasks',
-        theme: ThemeData(
-          primarySwatch: Colors.brown,
-        ),
+        theme: kClickUpTheme,
         home: HomePage(),
         onGenerateRoute: router.generator,
       ),
