@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:fluro/fluro.dart' as fluro;
 
 import '../config.dart';
@@ -28,7 +27,7 @@ class _AppState extends State<App> {
     super.initState();
     Routes.configureRoutes(router);
     locator.registerSingleton<Config>(widget.config);
-    registerLocatorItems(Provider.of<Config>(context).clickupAPIKey);
+    registerLocatorItems(locator.get<Config>().clickupAPIKey);
   }
 
   @override
