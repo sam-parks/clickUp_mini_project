@@ -29,7 +29,7 @@ class ClickUpService {
       List<Task> tasks = await getTasksForList(clickupList.id);
       teamTasks.addAll(tasks);
     }
-
+    
     return teamTasks;
   }
 
@@ -82,12 +82,13 @@ class ClickUpService {
       List<Map<dynamic, dynamic>> teamMaps =
           List.castFrom(response.data['teams']);
 
-      teamMaps.forEach((teamMap) {
+      for (var teamMap in teamMaps) {
         teams.add(Team.fromJson(teamMap));
-      });
+      }
 
       return teams;
     } catch (e) {
+      print(e);
       throw e;
     }
   }
@@ -103,7 +104,8 @@ class ClickUpService {
             },
           ));
 
-      List<Map<String, dynamic>> spaceMaps = List.castFrom(response.data);
+      List<Map<String, dynamic>> spaceMaps =
+          List.castFrom(response.data['spaces']);
 
       spaceMaps.forEach((spaceMap) {
         spaces.add(Space.fromJson(spaceMap));
@@ -126,7 +128,8 @@ class ClickUpService {
             },
           ));
 
-      List<Map<String, dynamic>> taskMaps = List.castFrom(response.data);
+      List<Map<String, dynamic>> taskMaps =
+          List.castFrom(response.data['tasks']);
 
       taskMaps.forEach((taskMap) {
         tasks.add(Task.fromJson(taskMap));
@@ -149,7 +152,8 @@ class ClickUpService {
             },
           ));
 
-      List<Map<String, dynamic>> folderMaps = List.castFrom(response.data);
+      List<Map<String, dynamic>> folderMaps =
+          List.castFrom(response.data['folders']);
 
       folderMaps.forEach((folderMap) {
         folders.add(Folder.fromJson(folderMap));
@@ -164,7 +168,7 @@ class ClickUpService {
   Future<List<ClickupList>> getListsForFolder(String folderID) async {
     try {
       List<ClickupList> clickupLists = [];
-      Response response = await Dio().get("$_clickUpUrl/list/$folderID/list",
+      Response response = await Dio().get("$_clickUpUrl/folder/$folderID/list",
           options: Options(
             headers: {
               'Authorization': _apiToken,
@@ -172,7 +176,8 @@ class ClickUpService {
             },
           ));
 
-      List<Map<String, dynamic>> clickUpListMaps = List.castFrom(response.data);
+      List<Map<String, dynamic>> clickUpListMaps =
+          List.castFrom(response.data['lists']);
 
       clickUpListMaps.forEach((clickUpListMap) {
         clickupLists.add(ClickupList.fromJson(clickUpListMap));

@@ -40,7 +40,7 @@ class _AppState extends State<App> {
 
   @override
   void didChangeDependencies() {
-    _teamsBloc = BlocProvider.of<TeamsBloc>(context);
+    _teamsBloc = TeamsBloc();
     _teamsBloc.add(RetrieveTeams());
     super.didChangeDependencies();
   }
@@ -51,6 +51,8 @@ class _AppState extends State<App> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+
+    TeamsModel teamsModel = TeamsModel();
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -63,27 +65,37 @@ class _AppState extends State<App> {
         debugShowCheckedModeBanner: false,
         title: 'Click Up Tasks',
         theme: kClickUpTheme,
-        home: HomePage(),
+        home: ChangeNotifierProvider.value(
+          value: teamsModel,
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: _teamsBloc),
+              BlocProvider(create: (_) => TaskBloc())
+            ],
+            child: home(teamsModel),
+          ),
+        ),
         onGenerateRoute: router.generator,
       ),
     );
   }
 
-  home() {
-    return BlocBuilder(
+  home(TeamsModel teamsModel) {
+    return BlocConsumer(
         cubit: _teamsBloc,
-        builder: (context, state) {
+        listener: (context, state) {
           if (state is TeamsRetrieved) {
-            TeamsModel teamsModel = Provider.of<TeamsModel>(context);
             teamsModel.updateTeams(state.teams);
-            return TeamsPage();
           }
+        },
+        builder: (context, state) {
           if (state is TeamSelected) {
             // ignore: close_sinks
             TaskBloc folderListTaskBloc = BlocProvider.of<TaskBloc>(context);
             folderListTaskBloc.add(RetrieveTeamTasks(state.teamID));
+            return HomePage();
           }
-          return HomePage();
+          return TeamsPage();
         });
   }
 }
