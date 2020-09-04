@@ -18,3 +18,9 @@ class TasksRetrieved extends TaskState {
 
   TasksRetrieved(this.tasks);
 }
+
+class TasksRefreshed extends TaskState {
+  final List<Task> tasks;
+
+  TasksRefreshed(this.tasks);
+}

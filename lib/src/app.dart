@@ -94,7 +94,7 @@ class _AppState extends State<App> {
           // ignore: close_sinks
           TaskBloc folderListTaskBloc = BlocProvider.of<TaskBloc>(context);
           folderListTaskBloc.add(RetrieveTeamTasks(state.teamID));
-          router.navigateTo(context, "/tasks",
+          router.navigateTo(context, "/tasks/${state.teamID}",
               transition: TransitionType.fadeIn);
         }
       },

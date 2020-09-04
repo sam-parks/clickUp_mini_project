@@ -15,3 +15,9 @@ class RetrieveTeamTasks extends TaskEvent {
 
   RetrieveTeamTasks(this.teamID);
 }
+
+class RefreshTeamTasks extends TaskEvent {
+    final String teamID;
+
+  RefreshTeamTasks(this.teamID);
+}

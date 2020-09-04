@@ -4,11 +4,14 @@ import 'package:click_up_tasks/src/ui/style.dart';
 import 'package:click_up_tasks/src/ui/widgets/dialogs.dart';
 import 'package:click_up_tasks/src/ui/widgets/radial_menu.dart';
 import 'package:click_up_tasks/src/ui/widgets/task_tile.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class TasksPage extends StatefulWidget {
-  TasksPage({Key key}) : super(key: key);
+  TasksPage({Key key, this.teamID}) : super(key: key);
+  final String teamID;
 
   @override
   _TasksPageState createState() => _TasksPageState();
@@ -16,6 +19,9 @@ class TasksPage extends StatefulWidget {
 
 class _TasksPageState extends State<TasksPage> {
   List<Task> tasks;
+
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +44,19 @@ class _TasksPageState extends State<TasksPage> {
           if (state is TasksRetrieved) {
             tasks = state.tasks;
           }
-          return Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                    itemCount: tasks.length,
-                    itemBuilder: (context, index) {
-                      return TaskTile(tasks[index]);
-                    }),
-              ),
-            ],
+          if (state is TasksRefreshed) {
+            _refreshController.refreshCompleted();
+          }
+          return SmartRefresher(
+            enablePullDown: true,
+            onRefresh: () => taskBloc.add(RefreshTeamTasks(widget.teamID)),
+            header: WaterDropHeader(),
+            controller: _refreshController,
+            child: ListView.builder(
+                itemCount: tasks.length,
+                itemBuilder: (context, index) {
+                  return TaskTile(tasks[index]);
+                }),
           );
         },
       ),

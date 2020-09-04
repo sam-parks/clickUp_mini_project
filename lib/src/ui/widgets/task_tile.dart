@@ -26,10 +26,6 @@ class _TaskTileState extends State<TaskTile> {
         elevation: 2,
         color: Colors.white,
         child: ListTile(
-          trailing: Icon(
-            Icons.edit,
-            color: AppColors.purple_blue,
-          ),
           leading: Container(
             height: 20,
             width: 20,

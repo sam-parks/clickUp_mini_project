@@ -14,9 +14,11 @@ class Routes {
         handler: fluro.Handler(
           handlerFunc: (context, parameters) => TeamsPage(),
         ));
-    router.define('/tasks',
+    router.define('/tasks/:id',
         handler: fluro.Handler(
-          handlerFunc: (context, parameters) => TasksPage(),
+          handlerFunc: (context, parameters) => TasksPage(
+            teamID: parameters["id"][0],
+          ),
         ));
   }
 }

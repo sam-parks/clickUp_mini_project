@@ -19,6 +19,18 @@ create table $taskTable (
 ''');
   }
 
+  cleanDatabase() async {
+    try {
+      await db.transaction((txn) async {
+        var batch = txn.batch();
+        batch.delete(taskTable);
+        await batch.commit();
+      });
+    } catch (e) {
+      throw Exception('DbBase.cleanDatabase: ' + e.toString());
+    }
+  }
+
   insertTasks(List<Task> tasks) async {
     for (Task task in tasks) {
       Map taskMap = task.toMapForDB();
