@@ -23,6 +23,7 @@ dependencies:
 
   #WIDGETS
   flushbar: ^1.10.4
+  carousel_slider: ^2.2.1
 
  
   
