@@ -1,3 +1,4 @@
+import 'package:click_up_tasks/src/data/models/teams_model.dart';
 import 'package:click_up_tasks/src/data/task.dart';
 import 'package:dio/dio.dart';
 
@@ -37,6 +38,30 @@ class ClickUpService {
           ));
 
       return ClickUpList.fromJson(response.data);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<List<Team>> getTeams() async {
+    try {
+      List<Team> teams = [];
+      Response response = await Dio().get("$_clickUpUrl/team",
+          options: Options(
+            headers: {
+              'Authorization': _apiToken,
+              'Content-Type': 'application/json',
+            },
+          ));
+
+      List<Map<dynamic, dynamic>> teamMaps =
+          List.castFrom(response.data['teams']);
+
+      teamMaps.forEach((teamMap) {
+        teams.add(Team.fromJson(teamMap));
+      });
+
+      return teams;
     } catch (e) {
       throw e;
     }

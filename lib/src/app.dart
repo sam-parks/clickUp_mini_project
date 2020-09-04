@@ -1,8 +1,12 @@
+import 'package:click_up_tasks/src/bloc/teams/teams_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluro/fluro.dart' as fluro;
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 import '../config.dart';
+import 'data/models/teams_model.dart';
 import 'locator.dart';
 import 'ui/pages/home_page.dart';
 import 'ui/router.dart';
@@ -22,12 +26,21 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   final router = fluro.Router();
+  // ignore: close_sinks
+  TeamsBloc _teamsBloc;
   @override
   void initState() {
     super.initState();
     Routes.configureRoutes(router);
     locator.registerSingleton<Config>(widget.config);
     registerLocatorItems(locator.get<Config>().clickupAPIToken);
+  }
+
+  @override
+  void didChangeDependencies() {
+    _teamsBloc = BlocProvider.of<TeamsBloc>(context);
+    _teamsBloc.add(RetrieveTeams());
+    super.didChangeDependencies();
   }
 
   @override
@@ -52,5 +65,18 @@ class _AppState extends State<App> {
         onGenerateRoute: router.generator,
       ),
     );
+  }
+
+  home() {
+    return BlocBuilder(
+        cubit: _teamsBloc,
+        builder: (context, state) {
+          if (state is TeamsRetrieved) {
+            TeamsModel teamsModel = Provider.of<TeamsModel>(context);
+            teamsModel.updateTeams(state.teams);
+            return HomePage();
+          }
+          return HomePage();
+        });
   }
 }

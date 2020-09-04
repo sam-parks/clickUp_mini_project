@@ -19,8 +19,6 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
   Stream<TaskListState> mapEventToState(
     TaskListEvent event,
   ) async* {
-
-    
     if (event is RetrieveTasks) {
       try {
         yield TaskListLoadingState();

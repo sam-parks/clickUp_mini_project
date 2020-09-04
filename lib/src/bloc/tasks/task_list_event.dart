@@ -3,14 +3,16 @@ part of 'task_list_bloc.dart';
 @immutable
 abstract class TaskListEvent {}
 
-class CreateClickupList {
+
+
+class CreateClickupList extends TaskListEvent {
   final String folderID;
   final ClickUpList clickUpList;
 
   CreateClickupList(this.folderID, this.clickUpList);
 }
 
-class RetrieveClickupList {
+class RetrieveClickupList extends TaskListEvent {
   final String folderID;
 
   RetrieveClickupList(this.folderID);

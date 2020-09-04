@@ -18,3 +18,4 @@ class TasksRetrieved extends TaskListState {
 
   TasksRetrieved(this.tasks);
 }
+
