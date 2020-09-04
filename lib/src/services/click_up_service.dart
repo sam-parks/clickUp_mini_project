@@ -1,3 +1,4 @@
+import 'package:click_up_tasks/src/data/clickup_list.dart';
 import 'package:click_up_tasks/src/data/models/teams_model.dart';
 import 'package:click_up_tasks/src/data/task.dart';
 import 'package:dio/dio.dart';
@@ -7,6 +8,30 @@ class ClickUpService {
 
   String _apiToken;
   static const String _clickUpUrl = "https://api.clickup.com/api/v2";
+
+  Future<List<Task>> getAllTasksForTeam(String teamID) async {
+    List<Space> teamSpaces = await getSpacesForTeam(teamID);
+    List<Folder> teamFolders = [];
+    List<ClickupList> teamClickupLists = [];
+    List<Task> teamTasks = [];
+
+    for (Space space in teamSpaces) {
+      List<Folder> folders = await getFoldersForSpace(space.id);
+      teamFolders.addAll(folders);
+    }
+
+    for (Folder folder in teamFolders) {
+      List<ClickupList> clickupLists = await getListsForFolder(folder.id);
+      teamClickupLists.addAll(clickupLists);
+    }
+
+    for (ClickupList clickupList in teamClickupLists) {
+      List<Task> tasks = await getTasksForList(clickupList.id);
+      teamTasks.addAll(tasks);
+    }
+
+    return teamTasks;
+  }
 
   Future<Task> createTask(Task task, String listID) async {
     try {
@@ -25,8 +50,8 @@ class ClickUpService {
     }
   }
 
-  Future<ClickUpList> createClickupList(
-      ClickUpList clickUpList, String folderID) async {
+  Future<ClickupList> createClickupList(
+      ClickupList clickUpList, String folderID) async {
     try {
       Response response = await Dio().post("$_clickUpUrl/list/$folderID/task",
           data: clickUpList.toJson(),
@@ -37,7 +62,7 @@ class ClickUpService {
             },
           ));
 
-      return ClickUpList.fromJson(response.data);
+      return ClickupList.fromJson(response.data);
     } catch (e) {
       throw e;
     }
@@ -67,7 +92,30 @@ class ClickUpService {
     }
   }
 
-  Future<List<Task>> getTasks(String listID) async {
+  Future<List<Space>> getSpacesForTeam(String teamID) async {
+    try {
+      List<Space> spaces = [];
+      Response response = await Dio().get("$_clickUpUrl/team/$teamID/space",
+          options: Options(
+            headers: {
+              'Authorization': _apiToken,
+              'Content-Type': 'application/json',
+            },
+          ));
+
+      List<Map<String, dynamic>> spaceMaps = List.castFrom(response.data);
+
+      spaceMaps.forEach((spaceMap) {
+        spaces.add(Space.fromJson(spaceMap));
+      });
+
+      return spaces;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<List<Task>> getTasksForList(String listID) async {
     try {
       List<Task> tasks = [];
       Response response = await Dio().get("$_clickUpUrl/list/$listID/task",
@@ -90,9 +138,32 @@ class ClickUpService {
     }
   }
 
-  Future<List<ClickUpList>> getLists(String folderID) async {
+  Future<List<Folder>> getFoldersForSpace(String spaceID) async {
     try {
-      List<ClickUpList> clickupLists = [];
+      List<Folder> folders = [];
+      Response response = await Dio().get("$_clickUpUrl/space/$spaceID/folder",
+          options: Options(
+            headers: {
+              'Authorization': _apiToken,
+              'Content-Type': 'application/json',
+            },
+          ));
+
+      List<Map<String, dynamic>> folderMaps = List.castFrom(response.data);
+
+      folderMaps.forEach((folderMap) {
+        folders.add(Folder.fromJson(folderMap));
+      });
+
+      return folders;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<List<ClickupList>> getListsForFolder(String folderID) async {
+    try {
+      List<ClickupList> clickupLists = [];
       Response response = await Dio().get("$_clickUpUrl/list/$folderID/list",
           options: Options(
             headers: {
@@ -104,7 +175,7 @@ class ClickUpService {
       List<Map<String, dynamic>> clickUpListMaps = List.castFrom(response.data);
 
       clickUpListMaps.forEach((clickUpListMap) {
-        clickupLists.add(ClickUpList.fromJson(clickUpListMap));
+        clickupLists.add(ClickupList.fromJson(clickUpListMap));
       });
 
       return clickupLists;

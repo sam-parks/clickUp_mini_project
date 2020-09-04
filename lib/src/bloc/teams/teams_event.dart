@@ -5,4 +5,8 @@ abstract class TeamsEvent {}
 
 class RetrieveTeams extends TeamsEvent {}
 
+class SelectTeam extends TeamsEvent {
+  final String teamID;
 
+  SelectTeam(this.teamID);
+}

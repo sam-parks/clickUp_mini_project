@@ -11,4 +11,10 @@ class TeamsRetrieved extends TeamsState {
   TeamsRetrieved(this.teams);
 }
 
+class TeamSelected extends TeamsState {
+  final String teamID;
+
+  TeamSelected(this.teamID);
+}
+
 class TeamsLoadingState extends TeamsState {}

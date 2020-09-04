@@ -1,3 +1,4 @@
+import 'package:click_up_tasks/src/bloc/tasks/task_bloc.dart';
 import 'package:click_up_tasks/src/bloc/teams/teams_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +10,7 @@ import '../config.dart';
 import 'data/models/teams_model.dart';
 import 'locator.dart';
 import 'ui/pages/home_page.dart';
+import 'ui/pages/teams_page.dart';
 import 'ui/router.dart';
 import 'ui/style.dart';
 
@@ -74,7 +76,12 @@ class _AppState extends State<App> {
           if (state is TeamsRetrieved) {
             TeamsModel teamsModel = Provider.of<TeamsModel>(context);
             teamsModel.updateTeams(state.teams);
-            return HomePage();
+            return TeamsPage();
+          }
+          if (state is TeamSelected) {
+            // ignore: close_sinks
+            TaskBloc folderListTaskBloc = BlocProvider.of<TaskBloc>(context);
+            folderListTaskBloc.add(RetrieveTeamTasks(state.teamID));
           }
           return HomePage();
         });

@@ -24,5 +24,8 @@ class TeamsBloc extends Bloc<TeamsEvent, TeamsState> {
         yield TeamsRetrieved(teams);
       } catch (e) {}
     }
+    if (event is SelectTeam) {
+      yield TeamSelected(event.teamID);
+    }
   }
 }

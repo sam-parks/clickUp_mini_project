@@ -3,7 +3,7 @@ class ClickupList {
   String name;
   int orderindex;
   String content;
-  Status status;
+  ListStatus status;
   Priority priority;
   dynamic assignee;
   dynamic taskCount;
@@ -40,7 +40,7 @@ class ClickupList {
     orderindex = json['orderindex'];
     content = json['content'];
     status =
-        json['status'] != null ? new Status.fromJson(json['status']) : null;
+        json['status'] != null ? new ListStatus.fromJson(json['status']) : null;
     priority = json['priority'] != null
         ? new Priority.fromJson(json['priority'])
         : null;
@@ -94,14 +94,14 @@ class ClickupList {
   }
 }
 
-class Status {
+class ListStatus {
   String status;
   String color;
   bool hideLabel;
 
-  Status({this.status, this.color, this.hideLabel});
+  ListStatus({this.status, this.color, this.hideLabel});
 
-  Status.fromJson(Map<String, dynamic> json) {
+  ListStatus.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     color = json['color'];
     hideLabel = json['hide_label'];

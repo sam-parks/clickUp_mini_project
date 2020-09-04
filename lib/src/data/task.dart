@@ -1,7 +1,7 @@
 class Task {
   String id;
   String name;
-  Status status;
+  TaskStatus status;
   String orderindex;
   String dateCreated;
   String dateUpdated;
@@ -16,9 +16,9 @@ class Task {
   dynamic startDate;
   dynamic timeEstimate;
   dynamic timeSpent;
-  ClickUpList clickUplist;
-  Folder folder;
-  Folder space;
+  dynamic clickUplist;
+  dynamic folder;
+  dynamic space;
   String url;
 
   Task(
@@ -48,7 +48,7 @@ class Task {
     id = json['id'];
     name = json['name'];
     status =
-        json['status'] != null ? new Status.fromJson(json['status']) : null;
+        json['status'] != null ? new TaskStatus.fromJson(json['status']) : null;
     orderindex = json['orderindex'];
     dateCreated = json['date_created'];
     dateUpdated = json['date_updated'];
@@ -79,11 +79,9 @@ class Task {
     startDate = json['start_date'];
     timeEstimate = json['time_estimate'];
     timeSpent = json['time_spent'];
-    clickUplist =
-        json['list'] != null ? new ClickUpList.fromJson(json['list']) : null;
-    folder =
-        json['folder'] != null ? new Folder.fromJson(json['folder']) : null;
-    space = json['space'] != null ? new Folder.fromJson(json['space']) : null;
+    clickUplist = json['list'];
+    folder = json['folder'];
+    space = json['space'];
     url = json['url'];
   }
 
@@ -116,29 +114,23 @@ class Task {
     data['start_date'] = this.startDate;
     data['time_estimate'] = this.timeEstimate;
     data['time_spent'] = this.timeSpent;
-    if (this.clickUplist != null) {
-      data['list'] = this.clickUplist.toJson();
-    }
-    if (this.folder != null) {
-      data['folder'] = this.folder.toJson();
-    }
-    if (this.space != null) {
-      data['space'] = this.space.toJson();
-    }
+    data['list'] = this.clickUplist;
+    data['folder'] = this.folder;
+    data['space'] = this.space;
     data['url'] = this.url;
     return data;
   }
 }
 
-class Status {
+class TaskStatus {
   String status;
   String color;
   int orderindex;
   String type;
 
-  Status({this.status, this.color, this.orderindex, this.type});
+  TaskStatus({this.status, this.color, this.orderindex, this.type});
 
-  Status.fromJson(Map<String, dynamic> json) {
+  TaskStatus.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     color = json['color'];
     orderindex = json['orderindex'];
@@ -176,38 +168,6 @@ class Creator {
     data['username'] = this.username;
     data['color'] = this.color;
     data['profilePicture'] = this.profilePicture;
-    return data;
-  }
-}
-
-class ClickUpList {
-  String id;
-
-  ClickUpList({this.id});
-
-  ClickUpList.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    return data;
-  }
-}
-
-class Folder {
-  String id;
-
-  Folder({this.id});
-
-  Folder.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
     return data;
   }
 }
