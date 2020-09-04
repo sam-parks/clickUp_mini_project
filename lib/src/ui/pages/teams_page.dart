@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:click_up_tasks/src/bloc/teams/teams_bloc.dart';
 import 'package:click_up_tasks/src/data/models/teams_model.dart';
+import 'package:click_up_tasks/src/ui/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -23,26 +24,31 @@ class _TeamsPageState extends State<TeamsPage> {
         title: Text("Teams"),
       ),
       body: teamsModel.teams == null
-          ? CircularProgressIndicator()
+          ? Center(child: CircularProgressIndicator())
           : Center(
               child: CarouselSlider(
                 options: CarouselOptions(height: 400.0),
                 items: teamsModel.teams.map((team) {
                   return Builder(
                     builder: (BuildContext context) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        margin: EdgeInsets.symmetric(horizontal: 5.0),
-                        child: Stack(
-                          children: [
-                            CustomPaint(
-                              size: Size.infinite, //2
-                              painter: SpaceCirclePainter(), //3
-                            ),
-                            Center(
-                              child: Text(team.name),
-                            )
-                          ],
+                      return GestureDetector(
+                        onTap: () => teamsBloc
+                            .add(SelectTeam(teamsModel.teams.first.id)),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: EdgeInsets.symmetric(horizontal: 5.0),
+                          child: Stack(
+                            children: [
+                              CustomPaint(
+                                size: Size.infinite, //2
+                                painter: SpaceCirclePainter(
+                                    AppColors.orange_pink), //3
+                              ),
+                              Center(
+                                child: Text(team.name),
+                              )
+                            ],
+                          ),
                         ),
                       );
                     },
@@ -50,14 +56,14 @@ class _TeamsPageState extends State<TeamsPage> {
                 }).toList(),
               ),
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => teamsBloc.add(SelectTeam(teamsModel.teams.first.id)),
-      ),
     );
   }
 }
 
 class SpaceCirclePainter extends CustomPainter {
+  final Color color;
+
+  SpaceCirclePainter(this.color);
   @override
   void paint(Canvas canvas, Size size) {
     double radius = 100.0;
@@ -72,7 +78,7 @@ class SpaceCirclePainter extends CustomPainter {
     canvas.drawPath(oval, shadowPaint);
     // draw circle
     Paint thumbPaint = Paint()
-      ..color = Colors.white
+      ..color = color
       ..style = PaintingStyle.fill;
     canvas.drawCircle(center, radius, thumbPaint);
   }
