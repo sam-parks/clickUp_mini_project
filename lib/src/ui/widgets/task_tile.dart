@@ -72,6 +72,13 @@ Color colorFromStatus(String color) {
   switch (color) {
     case 'to do':
       return Colors.grey;
+    case 'in progress':
+      return AppColors.light_blue;
+    case 'ready':
+      return AppColors.purple;
+    case 'complete':
+      return Colors.lightGreen;
+
     default:
       return Colors.grey;
   }

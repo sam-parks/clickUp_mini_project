@@ -29,61 +29,70 @@ class _TeamsPageState extends State<TeamsPage> {
       body: teamsModel.teams == null
           ? Center(child: CircularProgressIndicator())
           : Center(
-              child: Stack(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CarouselSlider(
-                    options: CarouselOptions(
-                        height: 400,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            _currentCarouselIndex = index;
-                          });
-                        }),
-                    items: teamsModel.teams.map((team) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return GestureDetector(
-                            onTap: () => teamsBloc
-                                .add(SelectTeam(teamsModel.teams.first.id)),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              margin: EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Stack(
-                                children: [
-                                  CustomPaint(
-                                    size: Size.infinite, //2
-                                    painter: SpaceCirclePainter(
-                                        AppColors.orange_pink), //3
-                                  ),
-                                  Center(
-                                    child: Text(team.name),
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    }).toList(),
+                  Text(
+                    "Select Your Space",
+                    style:
+                        TextStyle(color: AppColors.deep_violet, fontSize: 40),
                   ),
-                  Container(
-                    padding: EdgeInsets.only(top: 100),
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        for (int i = 0; i < teamsModel.teams.length; i++)
-                          if (i == _currentCarouselIndex) ...[
-                            CircleBar(
-                              isActive: true,
-                            )
-                          ] else
-                            CircleBar(
-                              isActive: false,
-                            ),
-                      ],
-                    ),
+                  Column(
+                    children: [
+                      CarouselSlider(
+                        options: CarouselOptions(
+                            height: 400,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                _currentCarouselIndex = index;
+                              });
+                            }),
+                        items: teamsModel.teams.map((team) {
+                          return Builder(
+                            builder: (BuildContext context) {
+                              return GestureDetector(
+                                onTap: () => teamsBloc
+                                    .add(SelectTeam(teamsModel.teams.first.id)),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                                  child: Stack(
+                                    children: [
+                                      CustomPaint(
+                                        size: Size.infinite, //2
+                                        painter: SpaceCirclePainter(
+                                            AppColors.orange_pink), //3
+                                      ),
+                                      Center(
+                                        child: Text(team.name),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }).toList(),
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            for (int i = 0; i < teamsModel.teams.length; i++)
+                              if (i == _currentCarouselIndex) ...[
+                                CircleBar(
+                                  isActive: true,
+                                )
+                              ] else
+                                CircleBar(
+                                  isActive: false,
+                                ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
