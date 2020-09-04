@@ -1,3 +1,3 @@
 abstract class Config {
-  String get clickupAPIKey;
+  String get clickupAPIToken;
 }

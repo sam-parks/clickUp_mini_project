@@ -27,7 +27,7 @@ class _AppState extends State<App> {
     super.initState();
     Routes.configureRoutes(router);
     locator.registerSingleton<Config>(widget.config);
-    registerLocatorItems(locator.get<Config>().clickupAPIKey);
+    registerLocatorItems(locator.get<Config>().clickupAPIToken);
   }
 
   @override
