@@ -1,11 +1,14 @@
+import 'package:click_up_tasks/src/data/task.dart';
 import 'package:click_up_tasks/src/ui/widgets/task_tile.dart';
 import 'package:click_up_tasks/src/util/validate.dart';
 import 'package:flutter/material.dart';
 
 import '../style.dart';
 
-createTaskDialog(BuildContext context) {
+createTaskDialog(BuildContext context, int orderIndex) {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String name;
+
   String status = 'to do';
   return showDialog(
       context: context,
@@ -40,17 +43,9 @@ createTaskDialog(BuildContext context) {
                               child: TextFormField(
                                 autofocus: true,
                                 decoration: InputDecoration(labelText: "Name"),
-                                validator: (value) {
-                                  return Validate.requiredField(
-                                      value, "Field required.");
+                                onChanged: (value) {
+                                  name = value;
                                 },
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: TextFormField(
-                                decoration:
-                                    InputDecoration(labelText: "Description"),
                                 validator: (value) {
                                   return Validate.requiredField(
                                       value, "Field required.");
@@ -113,7 +108,21 @@ createTaskDialog(BuildContext context) {
                                 child: SizedBox(
                                   width: 250,
                                   child: RaisedButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      if (_formKey.currentState.validate()) {
+                                        Task task = Task(
+                                            name: name,
+                                            orderindex: orderIndex,
+                                            dateCreated: DateTime.now()
+                                                .millisecondsSinceEpoch
+                                                .toString(),
+                                            dateUpdated: DateTime.now()
+                                                .millisecondsSinceEpoch
+                                                .toString(),
+                                            status: TaskStatus(status: status));
+                                        Navigator.of(context).pop(task);
+                                      }
+                                    },
                                     child: Text(
                                       "Create",
                                       style: TextStyle(color: Colors.white),

@@ -12,7 +12,7 @@ class ClickupList {
   dynamic startDate;
   dynamic startDateTime;
   Folder folder;
-  Space space;
+  ListSpace space;
   List<Statuses> statuses;
   String inboundAddress;
 
@@ -52,7 +52,7 @@ class ClickupList {
     startDateTime = json['start_date_time'];
     folder =
         json['folder'] != null ? new Folder.fromJson(json['folder']) : null;
-    space = json['space'] != null ? new Space.fromJson(json['space']) : null;
+    space = json['space'] != null ? new ListSpace.fromJson(json['space']) : null;
     if (json['statuses'] != null) {
       statuses = new List<Statuses>();
       json['statuses'].forEach((v) {
@@ -160,14 +160,14 @@ class Folder {
   }
 }
 
-class Space {
+class ListSpace {
   String id;
   String name;
   bool access;
 
-  Space({this.id, this.name, this.access});
+  ListSpace({this.id, this.name, this.access});
 
-  Space.fromJson(Map<String, dynamic> json) {
+  ListSpace.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     access = json['access'];

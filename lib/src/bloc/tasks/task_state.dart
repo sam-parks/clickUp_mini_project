@@ -24,3 +24,10 @@ class TasksRefreshed extends TaskState {
 
   TasksRefreshed(this.tasks);
 }
+
+class TaskCreated extends TaskState {
+  final Task task;
+
+  TaskCreated(this.task);
+}
+

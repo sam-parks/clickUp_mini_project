@@ -47,5 +47,16 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         yield TasksRetrieved(tasks);
       } catch (e) {}
     }
+
+    if (event is CreateTask) {
+      try {
+        yield TaskStateLoadingState();
+        Task task = await _clickUpService.createTask(event.task, event.listID);
+
+        taskDBProvider.insertTask(task);
+
+        yield TaskCreated(task);
+      } catch (e) {}
+    }
   }
 }

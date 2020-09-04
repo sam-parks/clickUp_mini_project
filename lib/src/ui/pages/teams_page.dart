@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:click_up_tasks/src/bloc/tasks/task_bloc.dart';
 import 'package:click_up_tasks/src/bloc/teams/teams_bloc.dart';
 import 'package:click_up_tasks/src/data/models/teams_model.dart';
 import 'package:click_up_tasks/src/ui/style.dart';
@@ -6,6 +7,7 @@ import 'package:click_up_tasks/src/ui/widgets/circle_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:fluro/fluro.dart' as fluro;
 
 class TeamsPage extends StatefulWidget {
   TeamsPage({Key key}) : super(key: key);
@@ -21,82 +23,91 @@ class _TeamsPageState extends State<TeamsPage> {
     // ignore: close_sinks
     TeamsBloc teamsBloc = BlocProvider.of<TeamsBloc>(context);
     TeamsModel teamsModel = Provider.of<TeamsModel>(context);
+    fluro.Router router = Provider.of<fluro.Router>(context);
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text("Teams"),
       ),
-      body: teamsModel.teams == null
-          ? Center(child: CircularProgressIndicator())
-          : Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Select Your Space",
-                    style:
-                        TextStyle(color: AppColors.deep_violet, fontSize: 40),
-                  ),
-                  Column(
-                    children: [
-                      CarouselSlider(
-                        options: CarouselOptions(
-                            height: 400,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                _currentCarouselIndex = index;
-                              });
-                            }),
-                        items: teamsModel.teams.map((team) {
-                          return Builder(
-                            builder: (BuildContext context) {
-                              return GestureDetector(
-                                onTap: () => teamsBloc
-                                    .add(SelectTeam(teamsModel.teams.first.id)),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                                  child: Stack(
-                                    children: [
-                                      CustomPaint(
-                                        size: Size.infinite, //2
-                                        painter: SpaceCirclePainter(
-                                            AppColors.orange_pink), //3
-                                      ),
-                                      Center(
-                                        child: Text(team.name),
-                                      )
-                                    ],
-                                  ),
+      body: BlocConsumer(
+        cubit: teamsBloc,
+        listener: (context, state) {
+          if (state is TeamSelected) {
+            // ignore: close_sinks
+            TaskBloc folderListTaskBloc = BlocProvider.of<TaskBloc>(context);
+            folderListTaskBloc.add(RetrieveTeamTasks(state.teamID));
+            router.navigateTo(context, "/tasks/${state.teamID}",
+                transition: fluro.TransitionType.fadeIn);
+          }
+        },
+        builder: (context, state) {
+          if (state is TeamsRetrieved) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    CarouselSlider(
+                      options: CarouselOptions(
+                          height: 400,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              _currentCarouselIndex = index;
+                            });
+                          }),
+                      items: teamsModel.teams.map((team) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return GestureDetector(
+                              onTap: () => teamsBloc
+                                  .add(SelectTeam(teamsModel.teams.first.id)),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                margin: EdgeInsets.symmetric(horizontal: 5.0),
+                                child: Stack(
+                                  children: [
+                                    CustomPaint(
+                                      size: Size.infinite, //2
+                                      painter: SpaceCirclePainter(
+                                          AppColors.orange_pink), //3
+                                    ),
+                                    Center(
+                                      child: Text(team.name),
+                                    )
+                                  ],
                                 ),
-                              );
-                            },
-                          );
-                        }).toList(),
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          for (int i = 0; i < teamsModel.teams.length; i++)
+                            if (i == _currentCarouselIndex) ...[
+                              CircleBar(
+                                isActive: true,
+                              )
+                            ] else
+                              CircleBar(
+                                isActive: false,
+                              ),
+                        ],
                       ),
-                      Container(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            for (int i = 0; i < teamsModel.teams.length; i++)
-                              if (i == _currentCarouselIndex) ...[
-                                CircleBar(
-                                  isActive: true,
-                                )
-                              ] else
-                                CircleBar(
-                                  isActive: false,
-                                ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          }
+          return Center(child: CircularProgressIndicator());
+        },
+      ),
     );
   }
 }
@@ -114,7 +125,7 @@ class SpaceCirclePainter extends CustomPainter {
     Path oval = Path()
       ..addOval(Rect.fromCircle(center: center, radius: radius + 10));
     Paint shadowPaint = Paint()
-      ..color = Colors.black.withOpacity(0.3)
+      ..color = Colors.black.withOpacity(0.4)
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 50);
     canvas.drawPath(oval, shadowPaint);
     // draw circle

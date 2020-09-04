@@ -13,8 +13,9 @@ class TeamsRetrieved extends TeamsState {
 
 class TeamSelected extends TeamsState {
   final String teamID;
+  final List<Space> spaces;
 
-  TeamSelected(this.teamID);
+  TeamSelected(this.teamID, this.spaces);
 }
 
 class TeamsLoadingState extends TeamsState {}

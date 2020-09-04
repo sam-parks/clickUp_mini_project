@@ -10,7 +10,7 @@ class Routes {
       debugPrint("Route was not found.");
       return Container();
     });
-    router.define('/',
+    router.define('/teams',
         handler: fluro.Handler(
           handlerFunc: (context, parameters) => TeamsPage(),
         ));

@@ -36,24 +36,7 @@ class _TaskTileState extends State<TaskTile> {
           title: Text(widget.task.name),
         ),
       ),
-      actions: <Widget>[
-        IconSlideAction(
-          caption: 'Archive',
-          color: Colors.blue,
-          icon: Icons.archive,
-        ),
-        IconSlideAction(
-          caption: 'Share',
-          color: Colors.indigo,
-          icon: Icons.share,
-        ),
-      ],
       secondaryActions: <Widget>[
-        IconSlideAction(
-          caption: 'More',
-          color: Colors.black45,
-          icon: Icons.more_horiz,
-        ),
         IconSlideAction(
           caption: 'Delete',
           color: Colors.red,

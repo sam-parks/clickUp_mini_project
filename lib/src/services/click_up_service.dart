@@ -1,5 +1,6 @@
 import 'package:click_up_tasks/src/data/clickup_list.dart';
 import 'package:click_up_tasks/src/data/models/teams_model.dart';
+import 'package:click_up_tasks/src/data/space.dart';
 import 'package:click_up_tasks/src/data/task.dart';
 import 'package:dio/dio.dart';
 
@@ -29,7 +30,7 @@ class ClickUpService {
       List<Task> tasks = await getTasksForList(clickupList.id);
       teamTasks.addAll(tasks);
     }
-    
+
     return teamTasks;
   }
 

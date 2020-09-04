@@ -38,6 +38,10 @@ create table $taskTable (
     }
   }
 
+  insertTask(Task task) async {
+    await db.insert(taskTable, task.toMapForDB());
+  }
+
   Future<List<Task>> retrieveTasks() async {
     List<Task> tasks = [];
     List<Map> taskMaps = await db.rawQuery('SELECT * FROM tasks');

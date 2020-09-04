@@ -82,8 +82,11 @@ class _TasksPageState extends State<TasksPage> {
               IconButton(
                 icon: Icon(Icons.add),
                 color: Colors.white,
-                onPressed: () {
-                  createTaskDialog(context);
+                onPressed: () async {
+                  Task task = await createTaskDialog(context, tasks.length + 1);
+                  if (task != null) {
+                    //taskBloc.add(CreateTask(task));
+                  }
                 },
               ),
             ],

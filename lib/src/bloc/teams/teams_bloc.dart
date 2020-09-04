@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:click_up_tasks/src/data/models/teams_model.dart';
+import 'package:click_up_tasks/src/data/space.dart';
 import 'package:click_up_tasks/src/services/click_up_service.dart';
 import 'package:meta/meta.dart';
 
@@ -25,7 +26,9 @@ class TeamsBloc extends Bloc<TeamsEvent, TeamsState> {
       } catch (e) {}
     }
     if (event is SelectTeam) {
-      yield TeamSelected(event.teamID);
+      List<Space> spaces = await _clickUpService.getSpacesForTeam(event.teamID);
+
+      yield TeamSelected(event.teamID, spaces);
     }
   }
 }
