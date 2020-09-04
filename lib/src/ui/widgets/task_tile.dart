@@ -2,6 +2,8 @@ import 'package:click_up_tasks/src/data/task.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../style.dart';
+
 class TaskTile extends StatefulWidget {
   TaskTile(
     this.task, {
@@ -20,14 +22,22 @@ class _TaskTileState extends State<TaskTile> {
         child: Slidable(
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
-      child: Container(
+      child: Card(
+        elevation: 2,
         color: Colors.white,
         child: ListTile(
-          leading: CircleAvatar(
-            backgroundColor: Colors.indigoAccent,
-            foregroundColor: Colors.white,
+          trailing: Icon(
+            Icons.edit,
+            color: AppColors.purple_blue,
           ),
-          subtitle: Text('SlidableDrawerDelegate'),
+          leading: Container(
+            height: 20,
+            width: 20,
+            decoration: BoxDecoration(
+                color: colorFromStatus(widget.task.status.status),
+                borderRadius: BorderRadius.circular(3)),
+          ),
+          title: Text(widget.task.name),
         ),
       ),
       actions: <Widget>[
@@ -55,5 +65,14 @@ class _TaskTileState extends State<TaskTile> {
         ),
       ],
     ));
+  }
+}
+
+Color colorFromStatus(String color) {
+  switch (color) {
+    case 'to do':
+      return Colors.grey;
+    default:
+      return Colors.grey;
   }
 }

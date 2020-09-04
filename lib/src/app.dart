@@ -1,5 +1,6 @@
 import 'package:click_up_tasks/src/bloc/tasks/task_bloc.dart';
 import 'package:click_up_tasks/src/bloc/teams/teams_bloc.dart';
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluro/fluro.dart' as fluro;
@@ -9,7 +10,7 @@ import 'package:provider/provider.dart';
 import '../config.dart';
 import 'data/models/teams_model.dart';
 import 'locator.dart';
-import 'ui/pages/home_page.dart';
+import 'resources/task_db_provider.dart';
 import 'ui/pages/teams_page.dart';
 import 'ui/router.dart';
 import 'ui/style.dart';
@@ -33,6 +34,8 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
+
+    taskDBProvider.open('clickUpTasks');
     Routes.configureRoutes(router);
     locator.registerSingleton<Config>(widget.config);
     registerLocatorItems(locator.get<Config>().clickupAPIToken);
@@ -61,41 +64,41 @@ class _AppState extends State<App> {
           currentFocus.unfocus();
         }
       },
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Click Up Tasks',
-        theme: kClickUpTheme,
-        home: ChangeNotifierProvider.value(
-          value: teamsModel,
-          child: MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: _teamsBloc),
-              BlocProvider(create: (_) => TaskBloc())
-            ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: _teamsBloc),
+          BlocProvider(create: (_) => TaskBloc())
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Click Up Tasks',
+          theme: kClickUpTheme,
+          home: ChangeNotifierProvider.value(
+            value: teamsModel,
             child: home(teamsModel),
           ),
+          onGenerateRoute: router.generator,
         ),
-        onGenerateRoute: router.generator,
       ),
     );
   }
 
   home(TeamsModel teamsModel) {
-    return BlocConsumer(
-        cubit: _teamsBloc,
-        listener: (context, state) {
-          if (state is TeamsRetrieved) {
-            teamsModel.updateTeams(state.teams);
-          }
-        },
-        builder: (context, state) {
-          if (state is TeamSelected) {
-            // ignore: close_sinks
-            TaskBloc folderListTaskBloc = BlocProvider.of<TaskBloc>(context);
-            folderListTaskBloc.add(RetrieveTeamTasks(state.teamID));
-            return HomePage();
-          }
-          return TeamsPage();
-        });
+    return BlocListener(
+      cubit: _teamsBloc,
+      listener: (context, state) {
+        if (state is TeamsRetrieved) {
+          teamsModel.updateTeams(state.teams);
+        }
+        if (state is TeamSelected) {
+          // ignore: close_sinks
+          TaskBloc folderListTaskBloc = BlocProvider.of<TaskBloc>(context);
+          folderListTaskBloc.add(RetrieveTeamTasks(state.teamID));
+          router.navigateTo(context, "/tasks",
+              transition: TransitionType.fadeIn);
+        }
+      },
+      child: TeamsPage(),
+    );
   }
 }

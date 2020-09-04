@@ -2,7 +2,7 @@ class Task {
   String id;
   String name;
   TaskStatus status;
-  String orderindex;
+  int orderindex;
   String dateCreated;
   String dateUpdated;
   dynamic dateClosed;
@@ -44,12 +44,22 @@ class Task {
       this.space,
       this.url});
 
+  Task.fromDBMap(Map<String, dynamic> map) {
+    id = map['id'];
+    name = map['name'];
+    status = TaskStatus(status: map['id']);
+    orderindex = map['orderindex'];
+    dateCreated = map['date_created'];
+    dateUpdated = map['date_updated'];
+    dateClosed = map['date_closed'];
+  }
+
   Task.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     status =
         json['status'] != null ? new TaskStatus.fromJson(json['status']) : null;
-    orderindex = json['orderindex'];
+    orderindex = double.parse(json['orderindex']).toInt();
     dateCreated = json['date_created'];
     dateUpdated = json['date_updated'];
     dateClosed = json['date_closed'];
@@ -85,12 +95,25 @@ class Task {
     url = json['url'];
   }
 
+  Map<String, dynamic> toMapForDB() {
+    final Map<String, dynamic> data = <String, dynamic>{
+      'id': id,
+      'name': name,
+      'status': status.status,
+      'orderindex': orderindex,
+      'date_created': dateCreated,
+      'date_updated': dateUpdated,
+      'date_closed': dateClosed
+    };
+    return data;
+  }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
     if (this.status != null) {
-      data['status'] = this.status.toJson();
+      data['status'] = this.status.status;
     }
     data['orderindex'] = this.orderindex;
     data['date_created'] = this.dateCreated;
@@ -100,13 +123,13 @@ class Task {
       data['creator'] = this.creator.toJson();
     }
     if (this.assignees != null) {
-      data['assignees'] = this.assignees.map((v) => v.toJson()).toList();
+      data['assignees'] = this.assignees.map((v) => v).toList();
     }
     if (this.checklists != null) {
-      data['checklists'] = this.checklists.map((v) => v.toJson()).toList();
+      data['checklists'] = this.checklists.map((v) => v).toList();
     }
     if (this.tags != null) {
-      data['tags'] = this.tags.map((v) => v.toJson()).toList();
+      data['tags'] = this.tags.map((v) => v).toList();
     }
     data['parent'] = this.parent;
     data['priority'] = this.priority;

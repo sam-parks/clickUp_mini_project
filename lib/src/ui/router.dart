@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart' as fluro;
 
-import 'pages/home_page.dart';
+import 'pages/tasks_page.dart';
+import 'pages/teams_page.dart';
 
 class Routes {
   static void configureRoutes(fluro.Router router) {
@@ -11,7 +12,11 @@ class Routes {
     });
     router.define('/',
         handler: fluro.Handler(
-          handlerFunc: (context, parameters) => HomePage(),
+          handlerFunc: (context, parameters) => TeamsPage(),
+        ));
+    router.define('/tasks',
+        handler: fluro.Handler(
+          handlerFunc: (context, parameters) => TasksPage(),
         ));
   }
 }

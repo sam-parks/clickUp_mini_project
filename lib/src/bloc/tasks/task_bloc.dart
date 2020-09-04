@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:click_up_tasks/src/data/clickup_list.dart';
 import 'package:click_up_tasks/src/data/task.dart';
+import 'package:click_up_tasks/src/resources/task_db_provider.dart';
 import 'package:click_up_tasks/src/services/click_up_service.dart';
 import 'package:meta/meta.dart';
 
@@ -23,8 +24,14 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     if (event is RetrieveTeamTasks) {
       try {
         yield TaskStateLoadingState();
-        List<Task> tasks =
-            await _clickUpService.getAllTasksForTeam(event.teamID);
+        List<Task> tasks;
+
+        tasks = await taskDBProvider.retrieveTasks();
+        if (tasks.isEmpty) {
+          tasks = await _clickUpService.getAllTasksForTeam(event.teamID);
+          taskDBProvider.insertTasks(tasks);
+        }
+
         yield TasksRetrieved(tasks);
       } catch (e) {}
     }

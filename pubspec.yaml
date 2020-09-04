@@ -25,6 +25,12 @@ dependencies:
   flushbar: ^1.10.4
   carousel_slider: ^2.2.1
   flutter_slidable: ^0.5.7
+  vector_math: ^2.0.8
+  gradient_widgets: ^0.5.2
+
+  #Style
+  font_awesome_flutter: ^8.8.1
+  
 
  
   

@@ -13,7 +13,20 @@ final kClickUpTheme = ThemeData(
 const String kFontFamilyNormal = 'Mermaid';
 
 class AppColors {
+  static List<Color> allColors = [
+    orange,
+    orange_pink,
+    pink,
+    violet,
+    deep_violet,
+    light_blue,
+    purple_blue,
+    purple
+  ];
+
   AppColors._();
+  static const Color background = Color(0xFFFAFBFC);
+
   static const Color orange = Color(0xFFFEB53D);
   static const Color orange_pink = Color(0xFFFF8E7B);
   static const Color pink = Color(0xFFFF7794);
