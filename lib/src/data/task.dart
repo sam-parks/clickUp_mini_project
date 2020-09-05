@@ -89,9 +89,9 @@ class Task {
     startDate = json['start_date'];
     timeEstimate = json['time_estimate'];
     timeSpent = json['time_spent'];
-    clickUplist = json['list'];
-    folder = json['folder'];
-    space = json['space'];
+    clickUplist = json['list']['id'];
+    folder = json['folder']['id'];
+    space = json['space']['id'];
     url = json['url'];
   }
 
@@ -100,6 +100,9 @@ class Task {
       'id': id,
       'name': name,
       'status': status.status,
+      'spaceID': space,
+      'folderID': folder,
+      'clickUplistID': clickUplist,
       'orderindex': orderindex,
       'date_created': dateCreated,
       'date_updated': dateUpdated,

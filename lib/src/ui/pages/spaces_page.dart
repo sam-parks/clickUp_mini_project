@@ -107,6 +107,7 @@ class _SpacesPageState extends State<SpacesPage> {
                       child: Text(
                         "Expand ${selectedSpace.name}",
                         style: TextStyle(
+                            fontSize: 20,
                             color: AppColors.allColors[_selectedItemIndex]),
                       ),
                     ),

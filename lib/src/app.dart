@@ -36,7 +36,6 @@ class _AppState extends State<App> {
     super.initState();
 
     taskDBProvider.open('clickUpTasks');
-
     locator.registerSingleton<Config>(widget.config);
     registerLocatorItems(locator.get<Config>().clickupAPIToken);
   }

@@ -9,7 +9,10 @@ class TaskDBProvider {
   _onCreate(Database db, int version) async {
     await db.execute('''
 create table $taskTable ( 
-  id text primary key, 
+  id text primary key,
+  spaceID text not null, 
+  folderID text not null, 
+  clickUplistID text not null, 
   name text not null,
   status text not null,
   orderindex integer not null,
@@ -53,6 +56,10 @@ create table $taskTable (
 
   Future open(String path) async {
     db = await openDatabase(path, version: 1, onCreate: _onCreate);
+  }
+
+  deleteAllData() async {
+    await deleteDatabase('clickUpTasks');
   }
 }
 
