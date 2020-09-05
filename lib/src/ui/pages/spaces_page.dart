@@ -84,7 +84,11 @@ class _SpacesPageState extends State<SpacesPage> {
                               padding: EdgeInsets.all(20),
                               color: AppColors.allColors[index],
                               child: Center(
-                                child: Text(space.name),
+                                child: Text(
+                                  space.name,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 14),
+                                ),
                               ),
                             ),
                           ),

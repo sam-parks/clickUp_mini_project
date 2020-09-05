@@ -96,7 +96,10 @@ class _TeamsPageState extends State<TeamsPage> {
                     painter: SpaceCirclePainter(AppColors.orange_pink), //3
                   ),
                   Center(
-                    child: Text(team.name),
+                    child: Text(
+                      team.name,
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
                   )
                 ],
               ),
