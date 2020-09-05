@@ -19,7 +19,6 @@ class _SpacesPageState extends State<SpacesPage> {
   int _selectedItemIndex = 0;
 
   ScrollController _innerCircleScrollController = ScrollController();
-  ScrollController _outerCircleScrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     TeamsModel teamsModel = Provider.of<TeamsModel>(context);

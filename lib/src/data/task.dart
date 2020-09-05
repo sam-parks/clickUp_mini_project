@@ -52,6 +52,9 @@ class Task {
     dateCreated = map['date_created'];
     dateUpdated = map['date_updated'];
     dateClosed = map['date_closed'];
+    clickUplist = map['clickUplistID'];
+    folder = map['folderID'];
+    space = map['spaceID'];
   }
 
   Task.fromJson(Map<String, dynamic> json) {

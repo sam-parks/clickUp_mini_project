@@ -26,7 +26,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         yield TaskStateLoadingState();
         List<Task> tasks;
 
-        tasks = await taskDBProvider.retrieveTasks();
+        tasks = await taskDBProvider.retrieveTasksForSpace(event.spaceID);
         if (tasks.isEmpty) {
           tasks = await _clickUpService.getAllTasksForSpace(event.spaceID);
           taskDBProvider.insertTasks(tasks);

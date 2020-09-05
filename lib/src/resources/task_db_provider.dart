@@ -45,9 +45,18 @@ create table $taskTable (
     await db.insert(taskTable, task.toMapForDB());
   }
 
-  Future<List<Task>> retrieveTasks() async {
+  Future<List<Task>> retrieveAllTasks() async {
     List<Task> tasks = [];
     List<Map> taskMaps = await db.rawQuery('SELECT * FROM tasks');
+    taskMaps.forEach((taskMap) {
+      tasks.add(Task.fromDBMap(taskMap));
+    });
+    return tasks;
+  }
+
+   Future<List<Task>> retrieveTasksForSpace(String spaceID) async {
+    List<Task> tasks = [];
+    List<Map> taskMaps = await db.rawQuery('SELECT * FROM tasks WHERE spaceID = $spaceID');
     taskMaps.forEach((taskMap) {
       tasks.add(Task.fromDBMap(taskMap));
     });
