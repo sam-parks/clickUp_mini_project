@@ -121,10 +121,21 @@ class SpaceCirclePainter extends CustomPainter {
     canvas.translate(size.width / 2, size.height / 2);
     Offset center = Offset(0.0, 0.0);
     // draw back shadow first
+    var gradient = RadialGradient(
+      center: const Alignment(0.0, 0.0), // near the top right
+      radius: 0.2,
+      colors: [
+        AppColors.orange, // yellow sun
+        AppColors.pink, AppColors.light_blue, AppColors.purple_blue,
+        AppColors.violet, // blue sky
+      ],
+      stops: [0.2, .2, .4, .6, 1.0],
+    );
     Path oval = Path()
       ..addOval(Rect.fromCircle(center: center, radius: radius + 10));
     Paint shadowPaint = Paint()
-      ..color = Colors.black.withOpacity(0.4)
+      ..shader = gradient
+          .createShader(Rect.fromCircle(center: center, radius: radius + 10))
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 50);
     canvas.drawPath(oval, shadowPaint);
     // draw circle

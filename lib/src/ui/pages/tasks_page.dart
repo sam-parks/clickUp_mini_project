@@ -29,6 +29,7 @@ class _TasksPageState extends State<TasksPage> {
     TaskBloc taskBloc = BlocProvider.of<TaskBloc>(context);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text("Tasks"),
@@ -85,7 +86,7 @@ class _TasksPageState extends State<TasksPage> {
                 onPressed: () async {
                   Task task = await createTaskDialog(context, tasks.length + 1);
                   if (task != null) {
-                    //taskBloc.add(CreateTask(task));
+                    //taskBloc.add(CreateTask(task, ));
                   }
                 },
               ),
