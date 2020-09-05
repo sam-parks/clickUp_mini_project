@@ -49,7 +49,7 @@ class _TasksPageState extends State<TasksPage> {
           }
           return SmartRefresher(
             enablePullDown: true,
-            onRefresh: () => taskBloc.add(RefreshTeamTasks(widget.teamID)),
+            onRefresh: () => taskBloc.add(RefreshSpaceTasks(widget.teamID)),
             header: WaterDropHeader(),
             controller: _refreshController,
             child: ListView.builder(

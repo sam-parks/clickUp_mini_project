@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../space.dart';
+
 class TeamsModel extends ChangeNotifier {
-  List<Team> _teams;
+  Map<Team, List<Space>> _teams;
 
-  List<Team> get teams => _teams;
+  Map<Team, List<Space>> get teams => _teams;
 
-  updateTeams(List<Team> teams) {
+  updateTeams(Map<Team, List<Space>> teams) {
     _teams = teams;
     notifyListeners();
   }

@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:click_up_tasks/src/bloc/tasks/task_bloc.dart';
 import 'package:click_up_tasks/src/bloc/teams/teams_bloc.dart';
 import 'package:click_up_tasks/src/data/models/teams_model.dart';
+import 'package:click_up_tasks/src/data/space.dart';
 import 'package:click_up_tasks/src/ui/style.dart';
 import 'package:click_up_tasks/src/ui/widgets/circle_bar.dart';
 import 'package:flutter/material.dart';
@@ -23,84 +23,48 @@ class _TeamsPageState extends State<TeamsPage> {
     // ignore: close_sinks
     TeamsBloc teamsBloc = BlocProvider.of<TeamsBloc>(context);
     TeamsModel teamsModel = Provider.of<TeamsModel>(context);
-    fluro.Router router = Provider.of<fluro.Router>(context);
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text("Teams"),
       ),
-      body: BlocConsumer(
+      body: BlocBuilder(
         cubit: teamsBloc,
-        listener: (context, state) {
-          if (state is TeamSelected) {
-            // ignore: close_sinks
-            TaskBloc folderListTaskBloc = BlocProvider.of<TaskBloc>(context);
-            folderListTaskBloc.add(RetrieveTeamTasks(state.teamID));
-            router.navigateTo(context, "/tasks/${state.teamID}",
-                transition: fluro.TransitionType.fadeIn);
-          }
-        },
         builder: (context, state) {
           if (state is TeamsRetrieved) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Column(
-                  children: [
-                    CarouselSlider(
-                      options: CarouselOptions(
-                          height: 400,
-                          onPageChanged: (index, reason) {
-                            setState(() {
-                              _currentCarouselIndex = index;
-                            });
-                          }),
-                      items: teamsModel.teams.map((team) {
-                        return Builder(
-                          builder: (BuildContext context) {
-                            return GestureDetector(
-                              onTap: () => teamsBloc
-                                  .add(SelectTeam(teamsModel.teams.first.id)),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                margin: EdgeInsets.symmetric(horizontal: 5.0),
-                                child: Stack(
-                                  children: [
-                                    CustomPaint(
-                                      size: Size.infinite, //2
-                                      painter: SpaceCirclePainter(
-                                          AppColors.orange_pink), //3
-                                    ),
-                                    Center(
-                                      child: Text(team.name),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      }).toList(),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          for (int i = 0; i < teamsModel.teams.length; i++)
-                            if (i == _currentCarouselIndex) ...[
-                              CircleBar(
-                                isActive: true,
-                              )
-                            ] else
-                              CircleBar(
-                                isActive: false,
-                              ),
-                        ],
-                      ),
-                    ),
-                  ],
+                Container(
+                  height: 400,
+                  child: CarouselSlider(
+                    options: CarouselOptions(
+                        height: 400,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            _currentCarouselIndex = index;
+                          });
+                        }),
+                    items: _expandableTeamBubbles(teamsModel.teams),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      for (int i = 0; i < teamsModel.teams.length; i++)
+                        if (i == _currentCarouselIndex) ...[
+                          CircleBar(
+                            isActive: true,
+                          )
+                        ] else
+                          CircleBar(
+                            isActive: false,
+                          ),
+                    ],
+                  ),
                 ),
               ],
             );
@@ -109,6 +73,39 @@ class _TeamsPageState extends State<TeamsPage> {
         },
       ),
     );
+  }
+
+  _expandableTeamBubbles(Map<Team, List<Space>> teamSpaceMaps) {
+    fluro.Router router = Provider.of<fluro.Router>(context);
+    return List.generate(teamSpaceMaps.length, (index) {
+      Team team = teamSpaceMaps.keys.toList()[index];
+      return Builder(
+        builder: (BuildContext context) {
+          return GestureDetector(
+            onTap: () {
+              print("hello");
+              router.navigateTo(context, "/spaces/${team.id}",
+                  transition: fluro.TransitionType.fadeIn);
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.symmetric(horizontal: 5.0),
+              child: Stack(
+                children: [
+                  CustomPaint(
+                    size: Size.infinite, //2
+                    painter: SpaceCirclePainter(AppColors.orange_pink), //3
+                  ),
+                  Center(
+                    child: Text(team.name),
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    });
   }
 }
 

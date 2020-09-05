@@ -57,6 +57,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0-nullsafety"
+  circle_wheel_scroll:
+    dependency: "direct main"
+    description:
+      name: circle_wheel_scroll
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1+1"
   clock:
     dependency: transitive
     description:

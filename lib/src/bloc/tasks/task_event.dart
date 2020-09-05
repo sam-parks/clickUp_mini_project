@@ -10,10 +10,10 @@ class CreateClickupList extends TaskEvent {
   CreateClickupList(this.folderID, this.clickUpList);
 }
 
-class RetrieveTeamTasks extends TaskEvent {
-  final String teamID;
+class RetrieveSpaceTasks extends TaskEvent {
+  final String spaceID;
 
-  RetrieveTeamTasks(this.teamID);
+  RetrieveSpaceTasks(this.spaceID);
 }
 
 class CreateTask extends TaskEvent {
@@ -23,8 +23,8 @@ class CreateTask extends TaskEvent {
   CreateTask(this.task, this.listID);
 }
 
-class RefreshTeamTasks extends TaskEvent {
-  final String teamID;
+class RefreshSpaceTasks extends TaskEvent {
+  final String spaceID;
 
-  RefreshTeamTasks(this.teamID);
+  RefreshSpaceTasks(this.spaceID);
 }

@@ -30,6 +30,7 @@ dependencies:
   vector_math: ^2.0.8
   gradient_widgets: ^0.5.2
   pull_to_refresh: ^1.6.1
+  circle_wheel_scroll: ^0.0.1+1
 
   #Style
   font_awesome_flutter: ^8.8.1

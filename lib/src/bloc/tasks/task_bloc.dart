@@ -21,14 +21,14 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   Stream<TaskState> mapEventToState(
     TaskEvent event,
   ) async* {
-    if (event is RetrieveTeamTasks) {
+    if (event is RetrieveSpaceTasks) {
       try {
         yield TaskStateLoadingState();
         List<Task> tasks;
 
         tasks = await taskDBProvider.retrieveTasks();
         if (tasks.isEmpty) {
-          tasks = await _clickUpService.getAllTasksForTeam(event.teamID);
+          tasks = await _clickUpService.getAllTasksForSpace(event.spaceID);
           taskDBProvider.insertTasks(tasks);
         }
 
@@ -36,11 +36,11 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       } catch (e) {}
     }
 
-    if (event is RefreshTeamTasks) {
+    if (event is RefreshSpaceTasks) {
       try {
         yield TaskStateLoadingState();
         List<Task> tasks =
-            await _clickUpService.getAllTasksForTeam(event.teamID);
+            await _clickUpService.getAllTasksForSpace(event.spaceID);
         await taskDBProvider.cleanDatabase();
         taskDBProvider.insertTasks(tasks);
 

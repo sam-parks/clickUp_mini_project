@@ -21,14 +21,16 @@ class TeamsBloc extends Bloc<TeamsEvent, TeamsState> {
     if (event is RetrieveTeams) {
       try {
         yield TeamsLoadingState();
+        Map<Team, List<Space>> teamSpaceMap = {};
         List<Team> teams = await _clickUpService.getTeams();
-        yield TeamsRetrieved(teams);
+        for (Team team in teams) {
+          List<Space> spaces = await _clickUpService.getSpacesForTeam(team.id);
+          teamSpaceMap[team] = spaces;
+        }
+
+        yield TeamsRetrieved(teamSpaceMap);
       } catch (e) {}
     }
-    if (event is SelectTeam) {
-      List<Space> spaces = await _clickUpService.getSpacesForTeam(event.teamID);
-
-      yield TeamSelected(event.teamID, spaces);
-    }
+   
   }
 }

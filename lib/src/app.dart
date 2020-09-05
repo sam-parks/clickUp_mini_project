@@ -75,7 +75,7 @@ class _AppState extends State<App> {
           cubit: _teamsBloc,
           listener: (context, state) {
             if (state is TeamsRetrieved) {
-              teamsModel.updateTeams(state.teams);
+              teamsModel.updateTeams(state.teamSpaceMap);
             }
           },
           child: SplashScreen.navigate(

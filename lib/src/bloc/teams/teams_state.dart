@@ -6,16 +6,13 @@ abstract class TeamsState {}
 class TeamsInitial extends TeamsState {}
 
 class TeamsRetrieved extends TeamsState {
-  final List<Team> teams;
+  final Map<Team, List<Space>> teamSpaceMap;
 
-  TeamsRetrieved(this.teams);
+  TeamsRetrieved(this.teamSpaceMap);
 }
 
-class TeamSelected extends TeamsState {
-  final String teamID;
-  final List<Space> spaces;
 
-  TeamSelected(this.teamID, this.spaces);
-}
+
+
 
 class TeamsLoadingState extends TeamsState {}

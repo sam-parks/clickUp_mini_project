@@ -34,6 +34,26 @@ class ClickUpService {
     return teamTasks;
   }
 
+  Future<List<Task>> getAllTasksForSpace(String spaceID) async {
+    List<Folder> spaceFolders = [];
+    List<ClickupList> spaceClickupLists = [];
+    List<Task> spaceTasks = [];
+
+    spaceFolders = await getFoldersForSpace(spaceID);
+
+    for (Folder folder in spaceFolders) {
+      List<ClickupList> clickupLists = await getListsForFolder(folder.id);
+      spaceClickupLists.addAll(clickupLists);
+    }
+
+    for (ClickupList clickupList in spaceClickupLists) {
+      List<Task> tasks = await getTasksForList(clickupList.id);
+      spaceTasks.addAll(tasks);
+    }
+
+    return spaceTasks;
+  }
+
   Future<Task> createTask(Task task, String listID) async {
     try {
       Response response = await Dio().post("$_clickUpUrl/list/$listID/task",
