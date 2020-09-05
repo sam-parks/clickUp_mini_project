@@ -18,6 +18,8 @@ class SpacesPage extends StatefulWidget {
 class _SpacesPageState extends State<SpacesPage> {
   int _selectedItemIndex = 0;
 
+  ScrollController _innerCircleScrollController = ScrollController();
+  ScrollController _outerCircleScrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     TeamsModel teamsModel = Provider.of<TeamsModel>(context);
@@ -38,14 +40,10 @@ class _SpacesPageState extends State<SpacesPage> {
                 children: [
                   Expanded(
                     child: CircleListScrollView(
+                      controller: _innerCircleScrollController,
                       physics: NeverScrollableScrollPhysics(),
-                      onSelectedItemChanged: (index) {
-                        setState(() {
-                          _selectedItemIndex = index;
-                        });
-                      },
                       radius: MediaQuery.of(context).size.width * 0.8,
-                      itemExtent: 20,
+                      itemExtent: 30,
                       children:
                           List.generate(teamsModel.teams[team].length, (index) {
                         return Center(
@@ -53,10 +51,10 @@ class _SpacesPageState extends State<SpacesPage> {
                             borderRadius: BorderRadius.circular(40),
                             child: AnimatedContainer(
                               duration: Duration(milliseconds: 500),
-                              width: _selectedItemIndex == index ? 10 : 5,
-                              height: _selectedItemIndex == index ? 90 : 30,
+                              width: _selectedItemIndex == index ? 15 : 5,
+                              height: _selectedItemIndex == index ? 120 : 30,
                               padding: EdgeInsets.all(20),
-                              color: Colors.blue,
+                              color: AppColors.allColors[index],
                             ),
                           ),
                         );
@@ -69,25 +67,30 @@ class _SpacesPageState extends State<SpacesPage> {
                       onSelectedItemChanged: (index) {
                         setState(() {
                           _selectedItemIndex = index;
+                          _innerCircleScrollController.animateTo(index * 40.0,
+                              duration: Duration(milliseconds: 1000),
+                              curve: Curves.bounceOut);
                         });
                       },
                       radius: MediaQuery.of(context).size.width * 0.8,
                       itemExtent: 80,
-                      children: teamsModel.teams[team].map((space) {
+                      children:
+                          List.generate(teamsModel.teams[team].length, (index) {
+                        Space space = teamsModel.teams[team][index];
                         return Center(
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(40),
                             child: Container(
                               width: 200,
                               padding: EdgeInsets.all(20),
-                              color: Colors.blue,
+                              color: AppColors.allColors[index],
                               child: Center(
                                 child: Text(space.name),
                               ),
                             ),
                           ),
                         );
-                      }).toList(),
+                      }),
                     ),
                   ),
                 ],
@@ -101,7 +104,11 @@ class _SpacesPageState extends State<SpacesPage> {
                   padding: const EdgeInsets.all(2.0),
                   child: Container(
                     child: Center(
-                      child: Text("Expand ${selectedSpace.name}"),
+                      child: Text(
+                        "Expand ${selectedSpace.name}",
+                        style: TextStyle(
+                            color: AppColors.allColors[_selectedItemIndex]),
+                      ),
                     ),
                     decoration: kInnerDecoration,
                   ),

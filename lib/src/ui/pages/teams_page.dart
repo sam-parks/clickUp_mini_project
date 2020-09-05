@@ -83,7 +83,6 @@ class _TeamsPageState extends State<TeamsPage> {
         builder: (BuildContext context) {
           return GestureDetector(
             onTap: () {
-              print("hello");
               router.navigateTo(context, "/spaces/${team.id}",
                   transition: fluro.TransitionType.fadeIn);
             },
