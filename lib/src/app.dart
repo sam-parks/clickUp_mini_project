@@ -58,7 +58,7 @@ class _AppState extends State<App> {
       DeviceOrientation.portraitDown,
     ]);
 
-    String asset = "assets/flare_splash.flr";
+    String asset = "assets/clickUp.flr";
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -80,11 +80,11 @@ class _AppState extends State<App> {
           },
           child: SplashScreen.navigate(
             startAnimation: '0',
-            endAnimation: '4',
-            loopAnimation: 'Untitled',
+            endAnimation: '2',
+            loopAnimation: '1',
             backgroundColor: Colors.white,
             name: asset,
-            until: () => Future.delayed(Duration(milliseconds: 4)),
+            until: () => Future.delayed(Duration(seconds: 4)),
             next: (context) => TeamsPage(),
           ),
         ),
