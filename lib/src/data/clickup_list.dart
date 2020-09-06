@@ -12,7 +12,7 @@ class ClickupList {
   dynamic startDate;
   dynamic startDateTime;
   Folder folder;
-  ListSpace space;
+  String space;
   List<Statuses> statuses;
   String inboundAddress;
 
@@ -50,9 +50,10 @@ class ClickupList {
     dueDateTime = json['due_date_time'];
     startDate = json['start_date'];
     startDateTime = json['start_date_time'];
-    folder =
-        json['folder'] != null ? new Folder.fromJson(json['folder']) : null;
-    space = json['space'] != null ? new ListSpace.fromJson(json['space']) : null;
+    folder = json['folder'] != null
+        ? new Folder.fromJson(json['folder'], space)
+        : null;
+    space = json['space']['id'];
     if (json['statuses'] != null) {
       statuses = new List<Statuses>();
       json['statuses'].forEach((v) {
@@ -60,6 +61,23 @@ class ClickupList {
       });
     }
     inboundAddress = json['inbound_address'];
+  }
+
+   ClickupList.fromDBMap(Map<String, dynamic> map) {
+    id = map['id'];
+    name = map['name'];
+    orderindex = map['orderindex'];
+    space = map['spaceID'];
+  }
+
+  Map<String, dynamic> toMapForDB() {
+    final Map<String, dynamic> data = <String, dynamic>{
+      'id': id,
+      'name': name,
+      'spaceID': space,
+      'orderindex': orderindex,
+    };
+    return data;
   }
 
   Map<String, dynamic> toJson() {
@@ -83,9 +101,7 @@ class ClickupList {
     if (this.folder != null) {
       data['folder'] = this.folder.toJson();
     }
-    if (this.space != null) {
-      data['space'] = this.space.toJson();
-    }
+    data['space'] = this.space;
     if (this.statuses != null) {
       data['statuses'] = this.statuses.map((v) => v.toJson()).toList();
     }
@@ -140,14 +156,25 @@ class Folder {
   String name;
   bool hidden;
   bool access;
+  String spaceID;
+
+  Map<String, dynamic> toMapForDB() {
+    final Map<String, dynamic> data = <String, dynamic>{
+      'id': id,
+      'name': name,
+      'spaceID': spaceID,
+    };
+    return data;
+  }
 
   Folder({this.id, this.name, this.hidden, this.access});
 
-  Folder.fromJson(Map<String, dynamic> json) {
+  Folder.fromJson(Map<String, dynamic> json, [String spaceID]) {
     id = json['id'];
     name = json['name'];
     hidden = json['hidden'];
     access = json['access'];
+    spaceID = json['space'] == null ? spaceID : json['space']['id'];
   }
 
   Map<String, dynamic> toJson() {

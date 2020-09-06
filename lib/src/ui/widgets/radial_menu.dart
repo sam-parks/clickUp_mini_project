@@ -121,7 +121,7 @@ class RadialAnimation extends StatelessWidget {
         heroTag: Random().nextInt(100000).toString(),
         backgroundColor: color,
         onPressed: () {},
-        child: Icon(icon),
+        child: Icon(icon, color: Colors.white),
       ),
     );
   }

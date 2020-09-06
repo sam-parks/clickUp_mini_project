@@ -14,9 +14,9 @@ class TasksErrorState extends TaskState {
 }
 
 class TasksRetrieved extends TaskState {
-  final List<Task> tasks;
+  final Map items;
 
-  TasksRetrieved(this.tasks);
+  TasksRetrieved(this.items);
 }
 
 class TasksRefreshed extends TaskState {

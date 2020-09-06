@@ -24,27 +24,30 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     if (event is RetrieveSpaceTasks) {
       try {
         yield TaskStateLoadingState();
-        List<Task> tasks;
+        Map items;
 
-        tasks = await taskDBProvider.retrieveTasksForSpace(event.spaceID);
-        if (tasks.isEmpty) {
-          tasks = await _clickUpService.getAllTasksForSpace(event.spaceID);
-          taskDBProvider.insertTasks(tasks);
+        items = await taskDBProvider.retrieveItemsForSpace(event.spaceID);
+        if (items['tasks'].isEmpty) {
+          items = await _clickUpService.getAllItemsForSpace(event.spaceID);
+          taskDBProvider.insertTasks(items['tasks']);
+          taskDBProvider.insertClickUpLists(items['clickUpLists']);
+          taskDBProvider.insertFolders(items['folders']);
         }
 
-        yield TasksRetrieved(tasks);
+        yield TasksRetrieved(items);
       } catch (e) {}
     }
 
     if (event is RefreshSpaceTasks) {
       try {
         yield TaskStateLoadingState();
-        List<Task> tasks =
-            await _clickUpService.getAllTasksForSpace(event.spaceID);
+        Map items = await _clickUpService.getAllItemsForSpace(event.spaceID);
         await taskDBProvider.cleanDatabase();
-        taskDBProvider.insertTasks(tasks);
+        taskDBProvider.insertTasks(items['tasks']);
+        taskDBProvider.insertClickUpLists(items['clickUpLists']);
+        taskDBProvider.insertFolders(items['folders']);
 
-        yield TasksRetrieved(tasks);
+        yield TasksRetrieved(items);
       } catch (e) {}
     }
 

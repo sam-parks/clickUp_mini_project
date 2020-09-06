@@ -34,7 +34,7 @@ class ClickUpService {
     return teamTasks;
   }
 
-  Future<List<Task>> getAllTasksForSpace(String spaceID) async {
+  Future<Map> getAllItemsForSpace(String spaceID) async {
     List<Folder> spaceFolders = [];
     List<ClickupList> spaceClickupLists = [];
     List<Task> spaceTasks = [];
@@ -51,7 +51,11 @@ class ClickUpService {
       spaceTasks.addAll(tasks);
     }
 
-    return spaceTasks;
+    return {
+      'folders': spaceFolders,
+      'clickUpLists': spaceClickupLists,
+      'tasks': spaceTasks
+    };
   }
 
   Future<Task> createTask(Task task, String listID) async {

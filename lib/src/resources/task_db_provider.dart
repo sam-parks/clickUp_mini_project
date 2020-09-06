@@ -1,8 +1,11 @@
+import 'package:click_up_tasks/src/data/clickup_list.dart';
 import 'package:click_up_tasks/src/data/task.dart';
 import 'package:sqflite/sqflite.dart';
 
 class TaskDBProvider {
   final String taskTable = 'tasks';
+  final String clickUpListTable = 'lists';
+  final String folderTable = 'folders';
 
   Database db;
 
@@ -19,6 +22,21 @@ create table $taskTable (
   date_created text not null,
   date_updated text not null,
   date_closed text)
+''');
+
+    await db.execute('''
+create table $clickUpListTable ( 
+  id text primary key,
+  spaceID text not null,
+  name text not null,
+  orderindex integer not null)
+''');
+
+    await db.execute('''
+create table $folderTable ( 
+  id text primary key,
+  spaceID text not null,
+  name text not null)
 ''');
   }
 
@@ -41,6 +59,20 @@ create table $taskTable (
     }
   }
 
+  insertClickUpLists(List<ClickupList> clickUpLists) async {
+    for (ClickupList clickupList in clickUpLists) {
+      Map clickupListMap = clickupList.toMapForDB();
+      await db.insert(clickUpListTable, clickupListMap);
+    }
+  }
+
+  insertFolders(List<Folder> folders) async {
+    for (Folder folder in folders) {
+      Map folderMap = folder.toMapForDB();
+      await db.insert(folderTable, folderMap);
+    }
+  }
+
   insertTask(Task task) async {
     await db.insert(taskTable, task.toMapForDB());
   }
@@ -54,13 +86,29 @@ create table $taskTable (
     return tasks;
   }
 
-   Future<List<Task>> retrieveTasksForSpace(String spaceID) async {
+  Future<Map> retrieveItemsForSpace(String spaceID) async {
     List<Task> tasks = [];
-    List<Map> taskMaps = await db.rawQuery('SELECT * FROM tasks WHERE spaceID = $spaceID');
+    List<ClickupList> clickupLists = [];
+    List<Folder> folders = [];
+    List<Map> taskMaps =
+        await db.rawQuery('SELECT * FROM tasks WHERE spaceID = $spaceID');
     taskMaps.forEach((taskMap) {
       tasks.add(Task.fromDBMap(taskMap));
     });
-    return tasks;
+
+    List<Map> clickupListMaps =
+        await db.rawQuery('SELECT * FROM lists WHERE spaceID = $spaceID');
+    clickupListMaps.forEach((clickupListMap) {
+      clickupLists.add(ClickupList.fromDBMap(clickupListMap));
+    });
+
+    List<Map> folderMaps =
+        await db.rawQuery('SELECT * FROM folders WHERE spaceID = $spaceID');
+    folderMaps.forEach((folderMap) {
+      folders.add(Folder.fromJson(folderMap, folderMap['spaceID']));
+    });
+
+    return {'folders': folders, 'clickUpLists': clickupLists, 'tasks': tasks};
   }
 
   Future open(String path) async {

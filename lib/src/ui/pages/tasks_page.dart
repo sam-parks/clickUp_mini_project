@@ -1,4 +1,5 @@
 import 'package:click_up_tasks/src/bloc/tasks/task_bloc.dart';
+import 'package:click_up_tasks/src/data/clickup_list.dart';
 import 'package:click_up_tasks/src/data/task.dart';
 import 'package:click_up_tasks/src/ui/style.dart';
 import 'package:click_up_tasks/src/ui/widgets/dialogs.dart';
@@ -19,6 +20,7 @@ class TasksPage extends StatefulWidget {
 
 class _TasksPageState extends State<TasksPage> {
   List<Task> tasks;
+  List<ClickupList> clickUpLists;
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -43,7 +45,8 @@ class _TasksPageState extends State<TasksPage> {
             );
           }
           if (state is TasksRetrieved) {
-            tasks = state.tasks;
+            tasks = state.items['tasks'];
+            clickUpLists = state.items['clickUpLists'];
           }
           if (state is TasksRefreshed) {
             _refreshController.refreshCompleted();
@@ -54,9 +57,25 @@ class _TasksPageState extends State<TasksPage> {
             header: WaterDropHeader(),
             controller: _refreshController,
             child: ListView.builder(
-                itemCount: tasks.length,
+                itemCount: clickUpLists.length,
                 itemBuilder: (context, index) {
-                  return TaskTile(tasks[index]);
+                  List<Task> tasksInList = (tasks.where(
+                          (task) => task.clickUplist == clickUpLists[index].id))
+                      .toList();
+
+                  return tasksInList.length != 0
+                      ? Column(
+                          children: [
+                            Text(clickUpLists[index].name),
+                            Column(
+                              children:
+                                  List.generate(tasksInList.length, (index) {
+                                return TaskTile(tasksInList[index]);
+                              }),
+                            )
+                          ],
+                        )
+                      : Container();
                 }),
           );
         },
@@ -84,9 +103,10 @@ class _TasksPageState extends State<TasksPage> {
                 icon: Icon(Icons.add),
                 color: Colors.white,
                 onPressed: () async {
-                  Task task = await createTaskDialog(context, tasks.length + 1);
+                  Task task = await createTaskDialog(
+                      context, tasks.length + 1, clickUpLists);
                   if (task != null) {
-                    //taskBloc.add(CreateTask(task, ));
+                    taskBloc.add(CreateTask(task, task.clickUplist));
                   }
                 },
               ),

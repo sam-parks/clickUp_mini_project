@@ -1,3 +1,4 @@
+import 'package:click_up_tasks/src/data/clickup_list.dart';
 import 'package:click_up_tasks/src/data/task.dart';
 import 'package:click_up_tasks/src/ui/widgets/task_tile.dart';
 import 'package:click_up_tasks/src/util/validate.dart';
@@ -5,7 +6,8 @@ import 'package:flutter/material.dart';
 
 import '../style.dart';
 
-createTaskDialog(BuildContext context, int orderIndex) {
+createTaskDialog(
+    BuildContext context, int orderIndex, List<ClickupList> clickupLists) {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String name;
 
