@@ -75,6 +75,22 @@ class ClickUpService {
     }
   }
 
+  Future<bool> deleteTask(String taskID) async {
+    try {
+      Response response = await Dio().delete("$_clickUpUrl/task/$taskID",
+          options: Options(
+            headers: {
+              'Authorization': _apiToken,
+              'Content-Type': 'application/json',
+            },
+          ));
+
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<ClickupList> createClickupList(
       ClickupList clickUpList, String folderID) async {
     try {
@@ -181,7 +197,7 @@ class ClickUpService {
           List.castFrom(response.data['folders']);
 
       folderMaps.forEach((folderMap) {
-        folders.add(Folder.fromJson(folderMap));
+        folders.add(Folder.fromJson(folderMap, spaceID));
       });
 
       return folders;

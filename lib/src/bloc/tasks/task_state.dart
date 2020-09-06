@@ -20,9 +20,9 @@ class TasksRetrieved extends TaskState {
 }
 
 class TasksRefreshed extends TaskState {
-  final List<Task> tasks;
+   final Map items;
 
-  TasksRefreshed(this.tasks);
+  TasksRefreshed(this.items);
 }
 
 class TaskCreated extends TaskState {
@@ -31,3 +31,8 @@ class TaskCreated extends TaskState {
   TaskCreated(this.task);
 }
 
+class TaskDeleted extends TaskState {
+  final String taskID;
+
+  TaskDeleted(this.taskID);
+}

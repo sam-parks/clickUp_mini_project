@@ -35,7 +35,7 @@ create table $clickUpListTable (
     await db.execute('''
 create table $folderTable ( 
   id text primary key,
-  spaceID text not null,
+  spaceID text,
   name text not null)
 ''');
   }
@@ -45,6 +45,8 @@ create table $folderTable (
       await db.transaction((txn) async {
         var batch = txn.batch();
         batch.delete(taskTable);
+        batch.delete(clickUpListTable);
+        batch.delete(folderTable);
         await batch.commit();
       });
     } catch (e) {
@@ -77,6 +79,10 @@ create table $folderTable (
     await db.insert(taskTable, task.toMapForDB());
   }
 
+  deleteTask(String taskId) async {
+    await db.delete(taskTable, where: 'id = ?', whereArgs: [taskId]);
+  }
+
   Future<List<Task>> retrieveAllTasks() async {
     List<Task> tasks = [];
     List<Map> taskMaps = await db.rawQuery('SELECT * FROM tasks');
@@ -105,7 +111,7 @@ create table $folderTable (
     List<Map> folderMaps =
         await db.rawQuery('SELECT * FROM folders WHERE spaceID = $spaceID');
     folderMaps.forEach((folderMap) {
-      folders.add(Folder.fromJson(folderMap, folderMap['spaceID']));
+      folders.add(Folder.fromJson(folderMap, spaceID));
     });
 
     return {'folders': folders, 'clickUpLists': clickupLists, 'tasks': tasks};

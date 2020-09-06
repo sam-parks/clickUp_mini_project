@@ -40,14 +40,13 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
     if (event is RefreshSpaceTasks) {
       try {
-        yield TaskStateLoadingState();
         Map items = await _clickUpService.getAllItemsForSpace(event.spaceID);
         await taskDBProvider.cleanDatabase();
         taskDBProvider.insertTasks(items['tasks']);
         taskDBProvider.insertClickUpLists(items['clickUpLists']);
         taskDBProvider.insertFolders(items['folders']);
 
-        yield TasksRetrieved(items);
+        yield TasksRefreshed(items);
       } catch (e) {}
     }
 
@@ -59,6 +58,17 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         taskDBProvider.insertTask(task);
 
         yield TaskCreated(task);
+      } catch (e) {}
+    }
+
+    if (event is DeleteTask) {
+      try {
+        bool success = await _clickUpService.deleteTask(event.taskID);
+
+        if (success) {
+          taskDBProvider.deleteTask(event.taskID);
+          yield TaskDeleted(event.taskID);
+        }
       } catch (e) {}
     }
   }

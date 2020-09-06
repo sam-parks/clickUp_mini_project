@@ -23,6 +23,12 @@ class CreateTask extends TaskEvent {
   CreateTask(this.task, this.listID);
 }
 
+class DeleteTask extends TaskEvent {
+  final String taskID;
+
+  DeleteTask(this.taskID);
+}
+
 class RefreshSpaceTasks extends TaskEvent {
   final String spaceID;
 

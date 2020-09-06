@@ -8,6 +8,7 @@ import 'package:click_up_tasks/src/ui/widgets/task_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class TasksPage extends StatefulWidget {
@@ -49,35 +50,58 @@ class _TasksPageState extends State<TasksPage> {
             clickUpLists = state.items['clickUpLists'];
           }
           if (state is TasksRefreshed) {
+            tasks = state.items['tasks'];
+            clickUpLists = state.items['clickUpLists'];
+            _refreshController.loadComplete();
             _refreshController.refreshCompleted();
           }
-          return SmartRefresher(
-            enablePullDown: true,
-            onRefresh: () => taskBloc.add(RefreshSpaceTasks(widget.teamID)),
-            header: WaterDropHeader(),
-            controller: _refreshController,
-            child: ListView.builder(
-                itemCount: clickUpLists.length,
-                itemBuilder: (context, index) {
-                  List<Task> tasksInList = (tasks.where(
-                          (task) => task.clickUplist == clickUpLists[index].id))
-                      .toList();
+          if (state is TaskCreated) {
+            tasks.add(state.task);
+          }
+          if (state is TaskDeleted) {
+            tasks.removeWhere((task) => task.id == state.taskID);
+          }
 
-                  return tasksInList.length != 0
-                      ? Column(
-                          children: [
-                            Text(clickUpLists[index].name),
-                            Column(
-                              children:
-                                  List.generate(tasksInList.length, (index) {
-                                return TaskTile(tasksInList[index]);
-                              }),
-                            )
-                          ],
-                        )
-                      : Container();
-                }),
-          );
+          return tasks.isEmpty
+              ? Center(
+                  child: Opacity(
+                      opacity: .4,
+                      child: SvgPicture.asset('assets/clickup.svg')),
+                )
+              : Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SmartRefresher(
+                    enablePullDown: true,
+                    onRefresh: () =>
+                        taskBloc.add(RefreshSpaceTasks(widget.teamID)),
+                    header: WaterDropHeader(),
+                    controller: _refreshController,
+                    child: ListView.builder(
+                        itemCount: clickUpLists.length,
+                        itemBuilder: (context, index) {
+                          List<Task> tasksInList = (tasks.where((task) =>
+                                  task.clickUplist == clickUpLists[index].id))
+                              .toList();
+
+                          Color listColor = AppColors.allColors[index];
+
+                          return tasksInList.length != 0
+                              ? Column(
+                                  children: [
+                                    Text(clickUpLists[index].name),
+                                    Column(
+                                      children: List.generate(
+                                          tasksInList.length, (index) {
+                                        return TaskTile(
+                                            tasksInList[index], listColor);
+                                      }),
+                                    )
+                                  ],
+                                )
+                              : Container();
+                        }),
+                  ),
+                );
         },
       ),
       floatingActionButton: RadialMenu(),
@@ -94,11 +118,7 @@ class _TasksPageState extends State<TasksPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.search),
-                color: Colors.white,
-                onPressed: () {},
-              ),
+              Spacer(),
               IconButton(
                 icon: Icon(Icons.add),
                 color: Colors.white,
