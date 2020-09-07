@@ -34,7 +34,7 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    //taskDBProvider.deleteAllData();
+    // taskDBProvider.deleteAllData();
     taskDBProvider.open('clickUpTasks');
     locator.registerSingleton<Config>(widget.config);
     registerLocatorItems(locator.get<Config>().clickupAPIToken);

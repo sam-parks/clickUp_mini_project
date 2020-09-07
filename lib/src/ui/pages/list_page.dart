@@ -91,11 +91,6 @@ class _ListPageState extends State<ListPage> {
                 },
               ),
               Spacer(),
-              IconButton(
-                icon: Icon(Icons.add),
-                color: Colors.white,
-                onPressed: () {},
-              ),
             ],
           ),
         ),
