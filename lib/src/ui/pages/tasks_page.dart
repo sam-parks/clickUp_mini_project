@@ -1,3 +1,4 @@
+import 'package:click_up_tasks/src/bloc/clickUpList/clickuplist_bloc.dart';
 import 'package:click_up_tasks/src/bloc/tasks/task_bloc.dart';
 import 'package:click_up_tasks/src/data/clickup_list.dart';
 import 'package:click_up_tasks/src/data/task.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class TasksPage extends StatefulWidget {
@@ -20,7 +22,7 @@ class TasksPage extends StatefulWidget {
 }
 
 class _TasksPageState extends State<TasksPage> {
-  List<Task> tasks;
+  List<Task> tasks = [];
   List<ClickupList> clickUpLists;
 
   RefreshController _refreshController =
@@ -30,14 +32,25 @@ class _TasksPageState extends State<TasksPage> {
   Widget build(BuildContext context) {
     // ignore: close_sinks
     TaskBloc taskBloc = BlocProvider.of<TaskBloc>(context);
-
+    // ignore: close_sinks
+    ClickuplistBloc clickuplistBloc = BlocProvider.of<ClickuplistBloc>(context);
+    
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text("Tasks"),
+        title: Text("Tasks", style: TextStyle(color: Colors.white)),
+        leading: Container(),
       ),
-      body: BlocBuilder(
+      body: BlocConsumer(
+        listener: (context, state) {
+          if (state is TaskCreated) {
+            tasks.add(state.task);
+          }
+          if (state is TaskDeleted) {
+            tasks.removeWhere((task) => task.id == state.taskID);
+          }
+        },
         cubit: taskBloc,
         builder: (context, state) {
           if (state is TaskStateLoadingState) {
@@ -48,18 +61,13 @@ class _TasksPageState extends State<TasksPage> {
           if (state is TasksRetrieved) {
             tasks = state.items['tasks'];
             clickUpLists = state.items['clickUpLists'];
+            clickuplistBloc.add(SetClickUpLists(clickUpLists));
           }
           if (state is TasksRefreshed) {
             tasks = state.items['tasks'];
             clickUpLists = state.items['clickUpLists'];
             _refreshController.loadComplete();
             _refreshController.refreshCompleted();
-          }
-          if (state is TaskCreated) {
-            tasks.add(state.task);
-          }
-          if (state is TaskDeleted) {
-            tasks.removeWhere((task) => task.id == state.taskID);
           }
 
           return tasks.isEmpty
@@ -74,7 +82,9 @@ class _TasksPageState extends State<TasksPage> {
                     enablePullDown: true,
                     onRefresh: () =>
                         taskBloc.add(RefreshSpaceTasks(widget.teamID)),
-                    header: WaterDropHeader(),
+                    header: WaterDropHeader(
+                      waterDropColor: AppColors.pink,
+                    ),
                     controller: _refreshController,
                     child: ListView.builder(
                         itemCount: clickUpLists.length,
@@ -88,7 +98,10 @@ class _TasksPageState extends State<TasksPage> {
                           return tasksInList.length != 0
                               ? Column(
                                   children: [
-                                    Text(clickUpLists[index].name),
+                                    Text(
+                                      clickUpLists[index].name,
+                                      style: TextStyle(color: listColor),
+                                    ),
                                     Column(
                                       children: List.generate(
                                           tasksInList.length, (index) {
@@ -104,7 +117,7 @@ class _TasksPageState extends State<TasksPage> {
                 );
         },
       ),
-      floatingActionButton: RadialMenu(),
+      floatingActionButton: RadialMenu(widget.teamID, MenuType.tasks),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
         child: Container(
@@ -118,6 +131,13 @@ class _TasksPageState extends State<TasksPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
+              IconButton(
+                icon: Icon(FontAwesomeIcons.home),
+                color: Colors.white,
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                },
+              ),
               Spacer(),
               IconButton(
                 icon: Icon(Icons.add),

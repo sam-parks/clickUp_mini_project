@@ -34,3 +34,4 @@ class RefreshSpaceTasks extends TaskEvent {
 
   RefreshSpaceTasks(this.spaceID);
 }
+

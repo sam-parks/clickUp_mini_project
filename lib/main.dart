@@ -1,4 +1,5 @@
 import 'package:click_up_tasks/src/app.dart';
+import 'package:click_up_tasks/src/bloc/clickUpList/clickuplist_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +21,8 @@ void main() {
       ],
       child: MultiBlocProvider(providers: [
         BlocProvider(create: (_) => TeamsBloc()),
-        BlocProvider(create: (_) => TaskBloc())
+        BlocProvider(create: (_) => TaskBloc()),
+        BlocProvider(create: (_) => ClickuplistBloc())
       ], child: App(_ProdConfig()))));
 }
 

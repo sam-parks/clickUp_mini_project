@@ -1,11 +1,11 @@
-import 'package:click_up_tasks/src/bloc/tasks/task_bloc.dart';
+import 'package:click_up_tasks/src/bloc/clickUpList/clickuplist_bloc.dart';
 import 'package:click_up_tasks/src/data/clickup_list.dart';
 import 'package:click_up_tasks/src/ui/style.dart';
 import 'package:click_up_tasks/src/ui/widgets/radial_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ListPage extends StatefulWidget {
   ListPage({Key key, this.teamID}) : super(key: key);
@@ -16,65 +16,60 @@ class ListPage extends StatefulWidget {
 }
 
 class _ListPageState extends State<ListPage> {
-  List<ClickupList> clickUpLists;
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  List<ClickupList> clickUpLists = [];
 
   @override
   Widget build(BuildContext context) {
     // ignore: close_sinks
-    TaskBloc taskBloc = BlocProvider.of<TaskBloc>(context);
+    ClickuplistBloc clickuplistBloc = BlocProvider.of<ClickuplistBloc>(context);
+    clickUpLists = clickuplistBloc.clickUpLists;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text("Lists", style: TextStyle(color: Colors.white)),
+        leading: Container(),
       ),
-      body: BlocBuilder(
-        cubit: taskBloc,
-        builder: (context, state) {
-          if (state is TaskStateLoadingState) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+      body: BlocListener(
+        cubit: clickuplistBloc,
+        listener: (context, state) {
+          if (state is ClickUpListsReordered) {
+            setState(() {});
           }
-          if (state is TasksRetrieved) {
-            clickUpLists = state.items['clickUpLists'];
-          }
-          if (state is TasksRefreshed) {
-            clickUpLists = state.items['clickUpLists'];
-            _refreshController.loadComplete();
-            _refreshController.refreshCompleted();
-          }
-
-          return clickUpLists.isEmpty
-              ? Center(
-                  child: Opacity(
-                      opacity: .4,
-                      child: SvgPicture.asset('assets/clickup.svg')),
-                )
-              : Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SmartRefresher(
-                    enablePullDown: true,
-                    onRefresh: () =>
-                        taskBloc.add(RefreshSpaceTasks(widget.teamID)),
-                    header: WaterDropHeader(
-                      waterDropColor: AppColors.violet,
-                    ),
-                    controller: _refreshController,
-                    child: ListView.builder(
-                        itemCount: clickUpLists.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            leading: Text(clickUpLists[index].name),
-                          );
-                        }),
-                  ),
-                );
         },
+        child: clickUpLists.isEmpty
+            ? Center(
+                child: Opacity(
+                    opacity: .4, child: SvgPicture.asset('assets/clickup.svg')),
+              )
+            : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ReorderableListView(
+                    onReorder: (int oldIndex, int newIndex) {
+                      setState(
+                        () {
+                          if (newIndex > oldIndex) {
+                            newIndex -= 1;
+                          }
+                          final ClickupList list =
+                              clickUpLists.removeAt(oldIndex);
+                          clickUpLists.insert(newIndex, list);
+                          clickuplistBloc
+                              .add(ReorderClickUpLists(clickUpLists));
+                        },
+                      );
+                    },
+                    children: List.generate(
+                        clickUpLists.length,
+                        (index) => ListTile(
+                              key: ValueKey(clickUpLists[index].id),
+                              trailing: Icon(Icons.reorder),
+                              title: Text(clickUpLists[index].name),
+                            ))),
+              ),
       ),
-      floatingActionButton: RadialMenu(widget.teamID),
+      floatingActionButton: RadialMenu(widget.teamID, MenuType.lists),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
         child: Container(
@@ -88,6 +83,13 @@ class _ListPageState extends State<ListPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
+              IconButton(
+                icon: Icon(FontAwesomeIcons.home),
+                color: Colors.white,
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                },
+              ),
               Spacer(),
               IconButton(
                 icon: Icon(Icons.add),

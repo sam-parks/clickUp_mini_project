@@ -7,13 +7,16 @@ import 'package:provider/provider.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
 import 'package:fluro/fluro.dart' as fluro;
 
+enum MenuType { tasks, lists }
+
 class RadialMenu extends StatefulWidget {
   RadialMenu(
-    this.teamID, {
+    this.teamID,
+    this.menuType, {
     Key key,
   }) : super(key: key);
   final String teamID;
-
+  final MenuType menuType;
   @override
   _RadialMenuState createState() => _RadialMenuState();
 }
@@ -37,13 +40,15 @@ class _RadialMenuState extends State<RadialMenu>
 
   @override
   Widget build(BuildContext context) {
-    return RadialAnimation(widget.teamID, controller: controller);
+    return RadialAnimation(widget.teamID, widget.menuType,
+        controller: controller);
   }
 }
 
 class RadialAnimation extends StatelessWidget {
   final String teamID;
-  RadialAnimation(this.teamID, {Key key, this.controller})
+  final MenuType menuType;
+  RadialAnimation(this.teamID, this.menuType, {Key key, this.controller})
       : scale = Tween<double>(
           begin: 1.5,
           end: 0.0,
@@ -73,12 +78,23 @@ class RadialAnimation extends StatelessWidget {
           child: Stack(
             children: [
               _buildButton(-60, color: AppColors.orange, icon: Icons.folder),
-              _buildButton(-120, color: AppColors.deep_violet, icon: Icons.list,
-                  onPressed: () {
-                _close();
-                router.navigateTo(context, "/lists/$teamID",
-                    transition: fluro.TransitionType.fadeIn);
-              }),
+              menuType == MenuType.tasks
+                  ? _buildButton(-120,
+                      color: AppColors.deep_violet,
+                      icon: Icons.list, onPressed: () {
+                      _close();
+                      router.pop(context);
+                      router.navigateTo(context, "/lists/$teamID",
+                          transition: fluro.TransitionType.fadeIn);
+                    })
+                  : _buildButton(-120,
+                      color: AppColors.deep_violet,
+                      icon: FontAwesomeIcons.tasks, onPressed: () {
+                      _close();
+                      router.pop(context);
+                      router.navigateTo(context, "/tasks/$teamID",
+                          transition: fluro.TransitionType.fadeIn);
+                    }),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Transform.scale(

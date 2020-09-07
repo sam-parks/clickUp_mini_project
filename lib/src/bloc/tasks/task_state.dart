@@ -20,7 +20,7 @@ class TasksRetrieved extends TaskState {
 }
 
 class TasksRefreshed extends TaskState {
-   final Map items;
+  final Map items;
 
   TasksRefreshed(this.items);
 }
@@ -36,3 +36,4 @@ class TaskDeleted extends TaskState {
 
   TaskDeleted(this.taskID);
 }
+
