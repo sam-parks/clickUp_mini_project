@@ -3,10 +3,16 @@ import 'dart:math';
 import 'package:click_up_tasks/src/ui/style.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
+import 'package:fluro/fluro.dart' as fluro;
 
 class RadialMenu extends StatefulWidget {
-  RadialMenu({Key key}) : super(key: key);
+  RadialMenu(
+    this.teamID, {
+    Key key,
+  }) : super(key: key);
+  final String teamID;
 
   @override
   _RadialMenuState createState() => _RadialMenuState();
@@ -31,12 +37,13 @@ class _RadialMenuState extends State<RadialMenu>
 
   @override
   Widget build(BuildContext context) {
-    return RadialAnimation(controller: controller);
+    return RadialAnimation(widget.teamID, controller: controller);
   }
 }
 
 class RadialAnimation extends StatelessWidget {
-  RadialAnimation({Key key, this.controller})
+  final String teamID;
+  RadialAnimation(this.teamID, {Key key, this.controller})
       : scale = Tween<double>(
           begin: 1.5,
           end: 0.0,
@@ -55,52 +62,65 @@ class RadialAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    fluro.Router router = Provider.of<fluro.Router>(context);
     return AnimatedBuilder(
       animation: controller,
       builder: (context, builder) {
         return Container(
-          margin: const EdgeInsets.all(20),
+          width: 200,
+          height: 200,
+          margin: const EdgeInsets.only(bottom: 20.0),
           child: Stack(
             children: [
               _buildButton(-60, color: AppColors.orange, icon: Icons.folder),
-              _buildButton(-120,
-                  color: AppColors.deep_violet, icon: Icons.list),
-              Transform.scale(
-                  scale: scale.value - 1,
-                  child: FloatingActionButton(
-                    child: const Icon(
-                      Icons.close,
-                      color: Colors.red,
-                    ),
-                    heroTag: "fab1",
-                    onPressed: _close,
-                    backgroundColor: Colors.white,
-                  )),
-              Transform.scale(
-                scale: scale.value,
-                child: ButtonTheme(
-                  height: 40,
-                  minWidth: 40,
-                  child: FloatingActionButton(
-                    heroTag: "fab3",
-                    child: Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(colors: [
-                            AppColors.orange,
-                            AppColors.orange_pink,
-                            AppColors.pink,
-                            AppColors.violet,
-                            AppColors.deep_violet,
-                          ])),
+              _buildButton(-120, color: AppColors.deep_violet, icon: Icons.list,
+                  onPressed: () {
+                _close();
+                router.navigateTo(context, "/lists/$teamID",
+                    transition: fluro.TransitionType.fadeIn);
+              }),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Transform.scale(
+                    scale: scale.value - 1,
+                    child: FloatingActionButton(
                       child: const Icon(
-                        FontAwesomeIcons.circleNotch,
-                        color: Colors.white,
+                        Icons.close,
+                        color: Colors.red,
                       ),
+                      heroTag: "fab1",
+                      onPressed: _close,
+                      backgroundColor: Colors.white,
+                    )),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Transform.scale(
+                  scale: scale.value,
+                  child: ButtonTheme(
+                    height: 40,
+                    minWidth: 40,
+                    child: FloatingActionButton(
+                      heroTag: "fab3",
+                      child: Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(colors: [
+                              AppColors.orange,
+                              AppColors.orange_pink,
+                              AppColors.pink,
+                              AppColors.violet,
+                              AppColors.deep_violet,
+                            ])),
+                        child: const Icon(
+                          FontAwesomeIcons.circleNotch,
+                          color: Colors.white,
+                        ),
+                      ),
+                      onPressed: _open,
                     ),
-                    onPressed: _open,
                   ),
                 ),
               ),
@@ -111,17 +131,20 @@ class RadialAnimation extends StatelessWidget {
     );
   }
 
-  _buildButton(double angle, {Color color, IconData icon}) {
+  _buildButton(double angle, {Color color, IconData icon, Function onPressed}) {
     final double rad = math.radians(angle);
-    return Transform(
-      transform: Matrix4.identity()
-        ..translate(
-            (translation.value) * cos(rad), (translation.value) * sin(rad)),
-      child: FloatingActionButton(
-        heroTag: Random().nextInt(100000).toString(),
-        backgroundColor: color,
-        onPressed: () {},
-        child: Icon(icon, color: Colors.white),
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Transform(
+        transform: Matrix4.identity()
+          ..translate(
+              (translation.value) * cos(rad), (translation.value) * sin(rad)),
+        child: FloatingActionButton(
+          heroTag: Random().nextInt(100000).toString(),
+          backgroundColor: color,
+          onPressed: onPressed,
+          child: Icon(icon, color: Colors.white),
+        ),
       ),
     );
   }

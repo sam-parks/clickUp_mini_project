@@ -1,5 +1,6 @@
 import 'package:click_up_tasks/src/data/clickup_list.dart';
 import 'package:click_up_tasks/src/data/task.dart';
+import 'package:click_up_tasks/src/ui/pages/spaces_page.dart';
 import 'package:click_up_tasks/src/ui/widgets/task_tile.dart';
 import 'package:click_up_tasks/src/util/validate.dart';
 import 'package:flutter/material.dart';
@@ -29,10 +30,8 @@ createTaskDialog(
                       padding: const EdgeInsets.all(12.0),
                       child: Form(
                         key: _formKey,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: ListView(
+                          shrinkWrap: true,
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(8),
@@ -60,9 +59,14 @@ createTaskDialog(
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Padding(
+                                  Container(
+                                    width: 220,
                                     padding: const EdgeInsets.all(8.0),
-                                    child: DropdownButton(
+                                    child: DropdownButtonFormField(
+                                        validator: (value) {
+                                          return Validate.requiredField(
+                                              value, "Field required.");
+                                        },
                                         hint: Text("Select a List"),
                                         icon: Icon(FontAwesomeIcons.list),
                                         value: listID,
@@ -100,10 +104,6 @@ createTaskDialog(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 8, horizontal: 30),
                                     child: DropdownButtonFormField(
-                                        validator: (value) {
-                                          return Validate.requiredField(
-                                              value, "Field required.");
-                                        },
                                         hint: Text("Select a Status"),
                                         value: status,
                                         items: [
@@ -141,33 +141,44 @@ createTaskDialog(
                                 ],
                               ),
                             ),
-                            Flexible(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (_formKey.currentState.validate()) {
+                                    Task task = Task(
+                                        clickUplist: listID,
+                                        name: name,
+                                        orderindex: orderIndex,
+                                        dateCreated: DateTime.now()
+                                            .millisecondsSinceEpoch
+                                            .toString(),
+                                        dateUpdated: DateTime.now()
+                                            .millisecondsSinceEpoch
+                                            .toString(),
+                                        status: TaskStatus(status: status));
+                                    Navigator.of(context).pop(task);
+                                  }
+                                },
                                 child: SizedBox(
                                   width: 250,
-                                  child: RaisedButton(
-                                    onPressed: () {
-                                      if (_formKey.currentState.validate()) {
-                                        Task task = Task(
-                                            clickUplist: listID,
-                                            name: name,
-                                            orderindex: orderIndex,
-                                            dateCreated: DateTime.now()
-                                                .millisecondsSinceEpoch
-                                                .toString(),
-                                            dateUpdated: DateTime.now()
-                                                .millisecondsSinceEpoch
-                                                .toString(),
-                                            status: TaskStatus(status: status));
-                                        Navigator.of(context).pop(task);
-                                      }
-                                    },
-                                    child: Text(
-                                      "Create",
-                                      style: TextStyle(color: Colors.white),
+                                  height: 40,
+                                  child: Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(2.0),
+                                      child: Container(
+                                        child: Center(
+                                          child: Text(
+                                            "Create",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: AppColors.purple_blue),
+                                          ),
+                                        ),
+                                        decoration: kInnerDecoration,
+                                      ),
                                     ),
-                                    color: const Color(0xFF1BC0C5),
+                                    decoration: kGradientBoxDecoration,
                                   ),
                                 ),
                               ),

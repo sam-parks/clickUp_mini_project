@@ -2,6 +2,7 @@ import 'package:click_up_tasks/src/ui/pages/spaces_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart' as fluro;
 
+import 'pages/list_page.dart';
 import 'pages/tasks_page.dart';
 import 'pages/teams_page.dart';
 
@@ -15,7 +16,7 @@ class Routes {
         handler: fluro.Handler(
           handlerFunc: (context, parameters) => TeamsPage(),
         ));
-     router.define('/spaces/:id',
+    router.define('/spaces/:id',
         handler: fluro.Handler(
           handlerFunc: (context, parameters) => SpacesPage(
             teamID: parameters["id"][0],
@@ -24,6 +25,12 @@ class Routes {
     router.define('/tasks/:id',
         handler: fluro.Handler(
           handlerFunc: (context, parameters) => TasksPage(
+            teamID: parameters["id"][0],
+          ),
+        ));
+    router.define('/lists/:id',
+        handler: fluro.Handler(
+          handlerFunc: (context, parameters) => ListPage(
             teamID: parameters["id"][0],
           ),
         ));

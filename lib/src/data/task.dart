@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
+
 class Task {
+  Key key;
   String id;
   String name;
   TaskStatus status;
@@ -46,6 +49,7 @@ class Task {
 
   Task.fromDBMap(Map<String, dynamic> map) {
     id = map['id'];
+    key = Key(id);
     name = map['name'];
     status = TaskStatus(status: map['id']);
     orderindex = map['orderindex'];
@@ -59,6 +63,7 @@ class Task {
 
   Task.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    key = Key(id);
     name = json['name'];
     status =
         json['status'] != null ? new TaskStatus.fromJson(json['status']) : null;

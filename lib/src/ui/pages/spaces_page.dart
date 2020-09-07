@@ -29,7 +29,10 @@ class _SpacesPageState extends State<SpacesPage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text("Spaces"),
+        title: Text(
+          "Spaces",
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: SafeArea(
         child: Column(

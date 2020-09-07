@@ -3,6 +3,7 @@ import 'package:click_up_tasks/src/data/task.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
 
 import '../style.dart';
 
@@ -22,6 +23,8 @@ class TaskTile extends StatefulWidget {
 class _TaskTileState extends State<TaskTile> {
   double opacity = 1;
 
+  var format = DateFormat.yMd().add_jm();
+
   @override
   Widget build(BuildContext context) {
     // ignore: close_sinks
@@ -37,8 +40,10 @@ class _TaskTileState extends State<TaskTile> {
           elevation: 2,
           color: Colors.white,
           child: Container(
-            height: 60,
+            height: 70,
             child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   width: 40,
@@ -67,6 +72,22 @@ class _TaskTileState extends State<TaskTile> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(widget.task.name),
                 ),
+                Spacer(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Text("Date Created"),
+                      if (widget.task.dateCreated != null)
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(format.format(
+                              DateTime.fromMillisecondsSinceEpoch(
+                                  int.parse(widget.task.dateCreated)))),
+                        )
+                    ],
+                  ),
+                )
               ],
             ),
           ),

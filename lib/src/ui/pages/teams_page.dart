@@ -26,7 +26,7 @@ class _TeamsPageState extends State<TeamsPage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text("Teams"),
+        title: Text("Teams", style: TextStyle(color: Colors.white)),
       ),
       body: BlocBuilder(
         cubit: teamsBloc,
