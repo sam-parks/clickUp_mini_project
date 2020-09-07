@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:click_up_tasks/src/bloc/tasks/task_bloc.dart';
 import 'package:click_up_tasks/src/data/task.dart';
 import 'package:flutter/material.dart';
@@ -68,24 +69,32 @@ class _TaskTileState extends State<TaskTile> {
                     ),
                   ),
                 ),
-                Padding(
+                Container(
+                  width: 80,
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(widget.task.name),
+                  child: AutoSizeText(
+                    widget.task.name,
+                    maxLines: 2,
+                  ),
                 ),
                 Spacer(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Text("Date Created"),
-                      if (widget.task.dateCreated != null)
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(format.format(
-                              DateTime.fromMillisecondsSinceEpoch(
-                                  int.parse(widget.task.dateCreated)))),
-                        )
-                    ],
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text("Date Created"),
+                        if (widget.task.dateCreated != null)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: AutoSizeText(
+                              format.format(DateTime.fromMillisecondsSinceEpoch(
+                                  int.parse(widget.task.dateCreated))),
+                              maxLines: 1,
+                            ),
+                          )
+                      ],
+                    ),
                   ),
                 )
               ],
