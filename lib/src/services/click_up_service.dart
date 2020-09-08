@@ -1,13 +1,20 @@
+import 'dart:convert';
+
 import 'package:click_up_tasks/src/data/clickup_list.dart';
 import 'package:click_up_tasks/src/data/models/teams_model.dart';
 import 'package:click_up_tasks/src/data/space.dart';
 import 'package:click_up_tasks/src/data/task.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 class ClickUpService {
-  ClickUpService(this._apiToken);
+  ClickUpService(this._apiToken) {
+    dio = Dio();
+    (dio.transformer as DefaultTransformer).jsonDecodeCallback = parseJson;
+  }
 
   String _apiToken;
+  Dio dio;
   static const String _clickUpUrl = "https://api.clickup.com/api/v2";
 
   Future<List<Task>> getAllTasksForTeam(String teamID) async {
@@ -60,7 +67,7 @@ class ClickUpService {
 
   Future<Task> createTask(Task task, String listID) async {
     try {
-      Response response = await Dio().post("$_clickUpUrl/list/$listID/task",
+      Response response = await dio.post("$_clickUpUrl/list/$listID/task",
           data: task.toJson(),
           options: Options(
             headers: {
@@ -77,7 +84,7 @@ class ClickUpService {
 
   Future<bool> deleteTask(String taskID) async {
     try {
-      Response response = await Dio().delete("$_clickUpUrl/task/$taskID",
+      Response response = await dio.delete("$_clickUpUrl/task/$taskID",
           options: Options(
             headers: {
               'Authorization': _apiToken,
@@ -94,7 +101,7 @@ class ClickUpService {
   Future<ClickupList> createClickupList(
       ClickupList clickUpList, String folderID) async {
     try {
-      Response response = await Dio().post("$_clickUpUrl/list/$folderID/task",
+      Response response = await dio.post("$_clickUpUrl/list/$folderID/task",
           data: clickUpList.toJson(),
           options: Options(
             headers: {
@@ -112,7 +119,7 @@ class ClickUpService {
   Future<List<Team>> getTeams() async {
     try {
       List<Team> teams = [];
-      Response response = await Dio().get("$_clickUpUrl/team",
+      Response response = await dio.get("$_clickUpUrl/team",
           options: Options(
             headers: {
               'Authorization': _apiToken,
@@ -137,7 +144,7 @@ class ClickUpService {
   Future<List<Space>> getSpacesForTeam(String teamID) async {
     try {
       List<Space> spaces = [];
-      Response response = await Dio().get("$_clickUpUrl/team/$teamID/space",
+      Response response = await dio.get("$_clickUpUrl/team/$teamID/space",
           options: Options(
             headers: {
               'Authorization': _apiToken,
@@ -161,7 +168,7 @@ class ClickUpService {
   Future<List<Task>> getTasksForList(String listID) async {
     try {
       List<Task> tasks = [];
-      Response response = await Dio().get("$_clickUpUrl/list/$listID/task",
+      Response response = await dio.get("$_clickUpUrl/list/$listID/task",
           options: Options(
             headers: {
               'Authorization': _apiToken,
@@ -185,7 +192,7 @@ class ClickUpService {
   Future<List<Folder>> getFoldersForSpace(String spaceID) async {
     try {
       List<Folder> folders = [];
-      Response response = await Dio().get("$_clickUpUrl/space/$spaceID/folder",
+      Response response = await dio.get("$_clickUpUrl/space/$spaceID/folder",
           options: Options(
             headers: {
               'Authorization': _apiToken,
@@ -197,7 +204,7 @@ class ClickUpService {
           List.castFrom(response.data['folders']);
 
       folderMaps.forEach((folderMap) {
-        folders.add(Folder.fromJson(folderMap, spaceID));
+        folders.add(Folder.fromJson(folderMap));
       });
 
       return folders;
@@ -209,7 +216,7 @@ class ClickUpService {
   Future<List<ClickupList>> getListsForFolder(String folderID) async {
     try {
       List<ClickupList> clickupLists = [];
-      Response response = await Dio().get("$_clickUpUrl/folder/$folderID/list",
+      Response response = await dio.get("$_clickUpUrl/folder/$folderID/list",
           options: Options(
             headers: {
               'Authorization': _apiToken,
@@ -223,10 +230,17 @@ class ClickUpService {
       clickUpListMaps.forEach((clickUpListMap) {
         clickupLists.add(ClickupList.fromJson(clickUpListMap));
       });
-
       return clickupLists;
     } catch (e) {
       throw e;
     }
   }
+}
+
+_parseAndDecode(String response) {
+  return jsonDecode(response);
+}
+
+parseJson(String text) {
+  return compute(_parseAndDecode, text);
 }

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:circle_wheel_scroll/circle_wheel_scroll_view.dart';
 import 'package:click_up_tasks/src/bloc/tasks/task_bloc.dart';
 import 'package:click_up_tasks/src/data/models/teams_model.dart';
@@ -83,11 +84,11 @@ class _SpacesPageState extends State<SpacesPage> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(40),
                             child: Container(
-                              width: 200,
+                              width: 100,
                               padding: EdgeInsets.all(20),
                               color: AppColors.allColors[index],
                               child: Center(
-                                child: Text(
+                                child: AutoSizeText(
                                   space.name,
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 14),

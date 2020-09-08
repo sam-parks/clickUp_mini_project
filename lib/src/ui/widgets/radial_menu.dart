@@ -84,6 +84,7 @@ class RadialAnimation extends StatelessWidget {
                       icon: Icons.list, onPressed: () {
                       _close();
                       router.pop(context);
+                      
                       router.navigateTo(context, "/lists/$teamID",
                           transition: fluro.TransitionType.fadeIn);
                     })

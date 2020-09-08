@@ -111,7 +111,7 @@ create table $folderTable (
     List<Map> folderMaps =
         await db.rawQuery('SELECT * FROM folders WHERE spaceID = $spaceID');
     folderMaps.forEach((folderMap) {
-      folders.add(Folder.fromJson(folderMap, spaceID));
+      folders.add(Folder.fromJson(folderMap));
     });
 
     return {'folders': folders, 'clickUpLists': clickupLists, 'tasks': tasks};

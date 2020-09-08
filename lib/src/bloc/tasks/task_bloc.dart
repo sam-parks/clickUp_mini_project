@@ -40,7 +40,12 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
     if (event is RefreshSpaceTasks) {
       try {
+        Stopwatch stopwatch = new Stopwatch()..start();
+
         Map items = await _clickUpService.getAllItemsForSpace(event.spaceID);
+
+        print('getAllItemsForSpace() executed in ${stopwatch.elapsed}');
+
         await taskDBProvider.cleanDatabase();
         taskDBProvider.insertTasks(items['tasks']);
         taskDBProvider.insertClickUpLists(items['clickUpLists']);

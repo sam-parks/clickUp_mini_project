@@ -69,6 +69,7 @@ class _AppState extends State<App> {
         debugShowCheckedModeBanner: false,
         title: 'Click Up Tasks',
         theme: kClickUpTheme,
+        //showPerformanceOverlay: true,
         home: BlocListener(
           cubit: _teamsBloc,
           listener: (context, state) {

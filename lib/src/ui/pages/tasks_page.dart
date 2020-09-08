@@ -6,6 +6,7 @@ import 'package:click_up_tasks/src/ui/style.dart';
 import 'package:click_up_tasks/src/ui/widgets/dialogs.dart';
 import 'package:click_up_tasks/src/ui/widgets/radial_menu.dart';
 import 'package:click_up_tasks/src/ui/widgets/task_tile.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,7 +35,7 @@ class _TasksPageState extends State<TasksPage> {
     TaskBloc taskBloc = BlocProvider.of<TaskBloc>(context);
     // ignore: close_sinks
     ClickuplistBloc clickuplistBloc = BlocProvider.of<ClickuplistBloc>(context);
-    
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.background,
@@ -46,9 +47,33 @@ class _TasksPageState extends State<TasksPage> {
         listener: (context, state) {
           if (state is TaskCreated) {
             tasks.add(state.task);
+            Flushbar(
+              titleText: Text(
+                "Task created!",
+              ),
+              icon: Icon(Icons.notification_important, color: AppColors.violet),
+              message: state.task.id,
+              isDismissible: true,
+              flushbarStyle: FlushbarStyle.FLOATING,
+              duration: Duration(seconds: 3),
+              backgroundColor: Colors.white,
+              borderColor: AppColors.violet,
+            )..show(context);
           }
           if (state is TaskDeleted) {
             tasks.removeWhere((task) => task.id == state.taskID);
+            Flushbar(
+              titleText: Text(
+                "Task deleted!",
+              ),
+              icon: Icon(Icons.notification_important, color: AppColors.violet),
+              message: state.taskID,
+              isDismissible: true,
+              flushbarStyle: FlushbarStyle.FLOATING,
+              duration: Duration(seconds: 3),
+              backgroundColor: Colors.white,
+              borderColor: AppColors.violet,
+            )..show(context);
           }
         },
         cubit: taskBloc,

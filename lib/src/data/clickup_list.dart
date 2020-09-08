@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+
 class ClickupList {
   String id;
   String name;
@@ -165,12 +169,11 @@ class Folder {
 
   Folder({this.id, this.name, this.hidden, this.access});
 
-  Folder.fromJson(Map<String, dynamic> json, String spaceID) {
+  Folder.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     hidden = json['hidden'];
     access = json['access'];
-    spaceID = spaceID;
   }
 
   Map<String, dynamic> toJson() {
@@ -229,3 +232,4 @@ class Statuses {
     return data;
   }
 }
+
