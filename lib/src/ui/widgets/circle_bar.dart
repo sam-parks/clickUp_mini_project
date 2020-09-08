@@ -26,10 +26,10 @@ class _CircleBarState extends State<CircleBar> {
             duration: Duration(milliseconds: 150),
             margin: EdgeInsets.symmetric(horizontal: 6),
             height: widget.isActive
-                ? widget.activeSize ?? 12
+                ? widget.activeSize ?? 18
                 : widget.inactiveSize ?? 8,
             width: widget.isActive
-                ? widget.activeSize ?? 12
+                ? widget.activeSize ?? 18
                 : widget.inactiveSize ?? 8,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
