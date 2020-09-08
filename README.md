@@ -37,7 +37,7 @@ I used three BloCs to handle the state of the application.
 
 ![Image of BloC Files](https://user-images.githubusercontent.com/44235716/92431340-e6d18f00-f15c-11ea-8ff8-b9837bc42b4c.png)
 
-The Teams BloC is simple and retrieves ClickUp teams at the start of the application. The ClickUpList BloC handles the list page and builds ther UI based on reordering of the list. The Tasks Bloc does the most amount of work. It retrieves all of the items (folders, lists, tasks) for a space, saves those items in the sqflite database, and handles creating and deleting tasks. I am creating the BloCs at the top of the widget tree so I can access them throughout the app:
+The Teams BloC is simple and retrieves ClickUp teams at the start of the application. The ClickUpList BloC handles the list page and rebuilds the UI based on reordering of the list. The Tasks Bloc does the most amount of work. It retrieves all of the items (folders, lists, tasks) for a space, saves those items in the sqflite database, and handles creating and deleting tasks. I am creating the BloCs at the top of the widget tree so I can access them throughout the app:
 
 
 **BloC Creation**
