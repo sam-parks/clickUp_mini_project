@@ -46,7 +46,10 @@ class _TasksPageState extends State<TasksPage> {
       body: BlocConsumer(
         listener: (context, state) {
           if (state is TaskCreated) {
-            tasks.add(state.task);
+            setState(() {
+              tasks.add(state.task);
+            });
+
             Flushbar(
               titleText: Text(
                 "Task created!",
@@ -61,7 +64,10 @@ class _TasksPageState extends State<TasksPage> {
             )..show(context);
           }
           if (state is TaskDeleted) {
-            tasks.removeWhere((task) => task.id == state.taskID);
+            setState(() {
+              tasks.removeWhere((task) => task.id == state.taskID);
+            });
+
             Flushbar(
               titleText: Text(
                 "Task deleted!",
@@ -131,7 +137,10 @@ class _TasksPageState extends State<TasksPage> {
                                       children: List.generate(
                                           tasksInList.length, (index) {
                                         return TaskTile(
-                                            tasksInList[index], listColor);
+                                          tasksInList[index],
+                                          listColor,
+                                          key: ValueKey(tasksInList[index].id),
+                                        );
                                       }),
                                     )
                                   ],
