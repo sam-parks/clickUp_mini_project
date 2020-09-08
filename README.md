@@ -16,6 +16,20 @@ This application showcases the state management, UI and performance techniques I
 ![GIF of Space Selection](https://media.giphy.com/media/d8PjnAeXTp5Gz9FuFg/giphy.gif)
 
 
+**Delete and Create Tasks**
+
+
+![GIF of Delete Task](https://media.giphy.com/media/icJbEqDUhRdwrFJQvF/giphy.gif) ![GIF of Delete Task](https://media.giphy.com/media/IfluM9ySfX3lwQSls1/giphy.gif)
+
+
+**Pull To Refresh**
+
+![GIF of Pull To Refresh ](https://media.giphy.com/media/co0G1n3HcKbMrD2WUr/giphy.gif)
+
+**Reorderable List**
+
+![GIF of Delete Task](https://media.giphy.com/media/eidSgtngJj6bOMNgH0/giphy.gif)
+
 
 ## State Management 
 
@@ -54,6 +68,34 @@ void main() {
     ClickuplistBloc clickuplistBloc = BlocProvider.of<ClickuplistBloc>(context);
 ```
 
-One thing I would change is refactoring the BloCs to have another BloC class that is dedicated to getting all items and saving them to sqflite, instead of the Task Bloc encompassing this functionality. I think this simplifies the code and makes it more maintanable as the Task page gets more functionality. 
+One thing I would change is refactoring the BloCs to have another BloC class that is dedicated to getting all items and saving them to sqflite instead of the Task Bloc having this functionality. I think this simplifies the code and makes it more maintanable as the Task page gets more functionality. 
+
+
+## Performance 
+
+I tried using isolates to parse both the [Dio](https://pub.dev/packages/dio) response and the folder, list, and task JSON objects. As it turns out, only the isolate used for the Dio response gave a performance boost (pull to refresh from 2.835494 seconds down to 2.160629 seconds) while the isolates for the data objects decreased performance. This can be attributed to the startup cost of the isolates. In the future it might be best to implement a [reusable isolate](https://cretezy.com/2020/flutter-fast-json) to circumvent the startup costs.
+
+
+**Dio Isolate**
+
+```
+ ClickUpService(this._apiToken) {
+    dio = Dio();
+    (dio.transformer as DefaultTransformer).jsonDecodeCallback = parseJson;
+  }
+
+_parseAndDecode(String response) {
+  return jsonDecode(response);
+}
+
+parseJson(String text) {
+  return compute(_parseAndDecode, text);
+}
+```
+
+
+
+I had a great time working with the ClickUp API and building this app! Thank you for taking the time to review and considering me for the Mobile Engineering position. Looking forward to hearing your feedback. 
+
 
 
