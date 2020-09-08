@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:click_up_tasks/src/bloc/teams/teams_bloc.dart';
 import 'package:click_up_tasks/src/data/models/teams_model.dart';
@@ -93,7 +95,8 @@ class _TeamsPageState extends State<TeamsPage> {
                 children: [
                   CustomPaint(
                     size: Size.infinite, //2
-                    painter: SpaceCirclePainter(AppColors.orange_pink), //3
+                    painter: SpaceCirclePainter(
+                        AppColors.allColors[Random().nextInt(7)]), //3
                   ),
                   Center(
                     child: Text(
