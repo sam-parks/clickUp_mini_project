@@ -4,7 +4,7 @@ This is a Flutter Application built using ClickUp APIs. The application allows t
 
 ## Overview
 
-This application showcases the state management, UI and performance techniques I have learned while using Flutter. I used the BloC pattern in combination with Provider and ChangeNotifiers for handling state. I relied on stacks and flexible widgets for complex and dynamic layouts. Since this was a simple application, performance was not prioritized, but I did use an isolate for parsing JSON responses which did enhance the performance by a noticeable amount. 
+This application showcases the state management, UI and performance techniques I have learned while using Flutter. I used the BloC pattern in combination with Provider and ChangeNotifiers for handling state. I relied on stacks and flexible widgets for complex and dynamic layouts. Since this was a simple application, performance was not an issue, but I did use an isolate for parsing JSON responses which did enhance the performance by a noticeable amount. 
 
 
 **Task Page**
