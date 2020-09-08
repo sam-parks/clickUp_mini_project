@@ -35,98 +35,98 @@ class _SpacesPageState extends State<SpacesPage> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: CircleListScrollView(
-                      controller: _innerCircleScrollController,
-                      physics: NeverScrollableScrollPhysics(),
-                      radius: MediaQuery.of(context).size.width * 0.8,
-                      itemExtent: 30,
-                      children:
-                          List.generate(teamsModel.teams[team].length, (index) {
-                        return Center(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(40),
-                            child: AnimatedContainer(
-                              duration: Duration(milliseconds: 500),
-                              width: _selectedItemIndex == index ? 15 : 5,
-                              height: _selectedItemIndex == index ? 120 : 30,
-                              padding: EdgeInsets.all(20),
-                              color: AppColors.allColors[index],
-                            ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  child: CircleListScrollView(
+                    clipToSize: false,
+                    controller: _innerCircleScrollController,
+                    physics: NeverScrollableScrollPhysics(),
+                    radius: MediaQuery.of(context).size.width * 0.8,
+                    itemExtent: 30,
+                    children:
+                        List.generate(teamsModel.teams[team].length, (index) {
+                      return Center(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(40),
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 500),
+                            width: _selectedItemIndex == index ? 15 : 5,
+                            height: _selectedItemIndex == index ? 120 : 30,
+                            padding: EdgeInsets.all(20),
+                            color: AppColors.allColors[index],
                           ),
-                        );
-                      }),
-                    ),
+                        ),
+                      );
+                    }),
                   ),
-                  Expanded(
-                    flex: 3,
-                    child: CircleListScrollView(
-                      onSelectedItemChanged: (index) {
-                        setState(() {
-                          _selectedItemIndex = index;
-                          _innerCircleScrollController.animateTo(index * 40.0,
-                              duration: Duration(milliseconds: 1000),
-                              curve: Curves.bounceOut);
-                        });
-                      },
-                      radius: MediaQuery.of(context).size.width * 0.8,
-                      itemExtent: 80,
-                      children:
-                          List.generate(teamsModel.teams[team].length, (index) {
-                        Space space = teamsModel.teams[team][index];
-                        return Center(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(40),
-                            child: Container(
-                              width: 100,
-                              padding: EdgeInsets.all(20),
-                              color: AppColors.allColors[index],
-                              child: Center(
-                                child: AutoSizeText(
-                                  space.name,
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 14),
-                                ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: CircleListScrollView(
+                    clipToSize: false,
+                    onSelectedItemChanged: (index) {
+                      setState(() {
+                        _selectedItemIndex = index;
+                        _innerCircleScrollController.animateTo(index * 40.0,
+                            duration: Duration(milliseconds: 1000),
+                            curve: Curves.bounceOut);
+                      });
+                    },
+                    radius: MediaQuery.of(context).size.width * 0.8,
+                    itemExtent: 80,
+                    children:
+                        List.generate(teamsModel.teams[team].length, (index) {
+                      Space space = teamsModel.teams[team][index];
+                      return Center(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(40),
+                          child: Container(
+                            width: 100,
+                            padding: EdgeInsets.all(20),
+                            color: AppColors.allColors[index],
+                            child: Center(
+                              child: AutoSizeText(
+                                space.name,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 14),
                               ),
                             ),
                           ),
-                        );
-                      }),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            GestureDetector(
-              onTap: () => _selectSpace(router, context, selectedSpace.id),
-              child: Container(
-                margin: const EdgeInsets.all(50),
-                child: Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: Container(
-                    child: Center(
-                      child: Text(
-                        "Expand ${selectedSpace.name}",
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: AppColors.allColors[_selectedItemIndex]),
-                      ),
-                    ),
-                    decoration: kInnerDecoration,
+                        ),
+                      );
+                    }),
                   ),
                 ),
-                height: 66.0,
-                decoration: kGradientBoxDecoration,
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+          GestureDetector(
+            onTap: () => _selectSpace(router, context, selectedSpace.id),
+            child: Container(
+              margin: const EdgeInsets.all(50),
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Container(
+                  child: Center(
+                    child: Text(
+                      "Expand ${selectedSpace.name}",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: AppColors.allColors[_selectedItemIndex]),
+                    ),
+                  ),
+                  decoration: kInnerDecoration,
+                ),
+              ),
+              height: 66.0,
+              decoration: kGradientBoxDecoration,
+            ),
+          ),
+        ],
       ),
     );
   }
