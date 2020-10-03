@@ -95,7 +95,3 @@ parseJson(String text) {
 
 
 
-I had a great time working with the ClickUp API and building this app! Thank you for taking the time to review and considering me for the Mobile Engineering position. Looking forward to hearing your feedback. 
-
-
-
